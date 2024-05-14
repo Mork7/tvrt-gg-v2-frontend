@@ -10,7 +10,7 @@ import {
 } from 'react-router-dom';
 
 // Components
-import Register from './pages/Register';
+import Register from './pages/Auth/Register.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(

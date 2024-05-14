@@ -1,17 +1,47 @@
 import { Button } from 'flowbite-react';
 import { useState } from 'react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router';
 
 const Register = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  
+  const navigate = useNavigate();
 
   const onSubmitHandler = (e) => {
     // gotta hook up our backend here
-
     e.preventDefault();
+    
+    const regexPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    
+    if (!regexPattern.test(email)) {
+      toast.error('Invalid email');
+      return;
+    }
+
+    if (password === confirmPassword) {
+      axios
+        .post('http://localhost:5000/users/register', {
+          name: username,
+          email: email,
+          password: password,
+        })
+        .then((res) => {
+          toast.success('User registered successfully');
+          console.log(res);
+          navigate('/')
+        })
+        .catch((err) => {
+          toast.error(err.response?.data?.message || 'Error registering user');
+          console.error(err);
+        });
+    } else {
+      toast.error('Passwords do not match');
+    }
   };
 
   return (
@@ -28,6 +58,7 @@ const Register = () => {
             id="username"
             className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
             onChange={(e) => setUsername(e.target.value)}
+            required
           />
           <label htmlFor="email">Email</label>
           <input
@@ -35,6 +66,7 @@ const Register = () => {
             id="email"
             className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
             onChange={(e) => setEmail(e.target.value)}
+            required
           />
           <label htmlFor="username">Password</label>
           <input
@@ -42,6 +74,7 @@ const Register = () => {
             id="password"
             className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
             onChange={(e) => setPassword(e.target.value)}
+            required
           />
           <label htmlFor="confirmPassword">Re-enter Password</label>
           <input
@@ -49,6 +82,7 @@ const Register = () => {
             id="confirmPassword"
             className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
             onChange={(e) => setConfirmPassword(e.target.value)}
+            required
           />
           <div className="flex justify-between">
             <Button color="failure" type="reset">
