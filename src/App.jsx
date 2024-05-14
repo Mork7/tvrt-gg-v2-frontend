@@ -1,9 +1,16 @@
+import Navigation from './components/Navigation';
+import { useState } from 'react';
+
 function App() {
+
+  const [isActive, setIsActive] = useState(false);
+
   return (
     <>
-      <div className="w-auto bg-yellow-100">
-        <h1 className="text-2xl">Home</h1>
-      </div>
+      <Navigation />
+      <main className="ml-[10rem]">
+        {}
+      </main>
     </>
   );
 }
