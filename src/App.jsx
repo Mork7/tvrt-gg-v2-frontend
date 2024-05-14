@@ -1,15 +1,12 @@
 import Navigation from './components/Navigation';
-import { useState } from 'react';
+import { Outlet } from 'react-router-dom';
 
 function App() {
-
-  const [isActive, setIsActive] = useState(false);
-
   return (
     <>
       <Navigation />
-      <main className="ml-[10rem]">
-        {}
+      <main className="m-[2rem]">
+        <Outlet />
       </main>
     </>
   );
