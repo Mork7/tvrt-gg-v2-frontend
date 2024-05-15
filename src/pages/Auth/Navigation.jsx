@@ -23,6 +23,16 @@ const Navigation = () => {
     }
   };
 
+  const clickProfileHandler = () => {
+    isLoggedIn ? navigate('/profile') : navigate('/login');
+  };
+
+  const clickDashboardHandler = () => {
+    isLoggedIn && userInfo.isAdmin
+      ? navigate('/admin/dashboard')
+      : navigate('/login');
+  };
+
   return (
     <Navbar fluid rounded className="bg-gray-800 text-white h-16 p-3 ">
       <span className="text-3xl font-semibold">TVRT.GG</span>
@@ -67,17 +77,19 @@ const Navigation = () => {
               {/* Username */}
               <span className="block text-sm">{userInfo?.name}</span>
               {/* Email */}
-
               <span className="block truncate text-sm font-medium">
-                {userInfo?.email}{' '}
+                {userInfo?.email}
               </span>
             </Dropdown.Header>
             {/* TODO If isAdmin, they have a dashboard */}
-            <Dropdown.Item>Dashboard</Dropdown.Item>
-            {/* TODO */}
-            <Dropdown.Item>Profile</Dropdown.Item>
+            {userInfo?.isAdmin && (
+              <Dropdown.Item onClick={clickDashboardHandler}>
+                Dashboard
+              </Dropdown.Item>
+            )}
+            <Dropdown.Item onClick={clickProfileHandler}>Profile</Dropdown.Item>
             <Dropdown.Divider />
-            {/* TODO If user is not logged in switch to login */}
+            {/* If logged in display logout button */}
             {isLoggedIn && (
               <Dropdown.Item onClick={logoutHandler}>Logout</Dropdown.Item>
             )}

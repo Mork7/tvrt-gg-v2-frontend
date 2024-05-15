@@ -14,7 +14,6 @@ const Login = () => {
   const navigate = useNavigate();
 
   const onLoginHandler = (e) => {
-    // gotta hook up our backend here
     e.preventDefault();
 
     if (isLoggedIn) {
@@ -23,7 +22,7 @@ const Login = () => {
     }
 
     axios
-      .post(`${import.meta.env.VITE_BASE_URL}/users/login`, {
+      .post(`${import.meta.env.VITE_BASE_URI}/users/login`, {
         email: email,
         password: password,
       })

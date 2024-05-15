@@ -12,15 +12,17 @@ import {
 // Contexts
 import { AuthProvider } from './contexts/AuthContext.jsx';
 
-// Components
+// Pages
 import Register from './pages/Auth/Register.jsx';
 import Login from './pages/Auth/Login.jsx';
+import Home from './pages/User/Home.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/" element={<Home />} />
     </Route>
   )
 );
