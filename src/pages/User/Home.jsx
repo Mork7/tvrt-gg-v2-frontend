@@ -3,24 +3,28 @@ import { Button } from 'flowbite-react';
 import { getPlayerRank } from '../../utils/leagueApi';
 import { toast } from 'react-toastify';
 import { Spinner } from 'flowbite-react';
+import SummonerDetails from '../../components/SummonerDetails';
 
 const Home = () => {
   const [summoner, setSummoner] = useState('');
   const [tag, setTag] = useState('');
   const [region, setRegion] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [results, setResults] = useState({});
+  const [results, setResults] = useState([]);
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-    // get player info
+    setIsLoading(true);
+
     try {
-      setIsLoading(true);
-      setResults(getPlayerRank(summoner, tag, region));
+      const data = await getPlayerRank(summoner, tag, region);
+      setResults(data[0]);
       toast.success('Player rank fetched successfully');
     } catch (error) {
-      toast.error('Error fetching player rank:', error);
+      toast.error(`Error fetching player rank: ${error.message}`);
     }
+
+    setIsLoading(false);
   };
 
   return (
@@ -235,14 +239,14 @@ const Home = () => {
           </div>
         </form>
       </div>
-      <div className="h-[51.5rem] w-[80rem] ml-12 rounded-lg border flex justify-center">
+      <div className="h-[51.5rem] w-[80rem] ml-12 rounded-lg border flex justify-center p-4">
         {/* Summoner Profile Tile*/}
         {isLoading ? (
           <div className="self-center">
             <Spinner aria-label="Extra large spinner example" size="xl" />
           </div>
         ) : (
-          ''
+          results && <SummonerDetails summoner={results} />
         )}
       </div>
     </section>

@@ -20,7 +20,6 @@ export const getPlayerRank = async (summonerName, tagLine, region) => {
         region: region,
       },
     });
-    console.log(response.data)
     return response.data;
   } catch (error) {
     console.error("Error fetching player rank:", error);
