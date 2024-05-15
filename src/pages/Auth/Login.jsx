@@ -1,12 +1,15 @@
 import { Button } from 'flowbite-react';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
+import { AuthContext } from '../../contexts/AuthContext';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const { isLoggedIn, login } = useContext(AuthContext);
 
   const navigate = useNavigate();
 
@@ -14,20 +17,20 @@ const Login = () => {
     // gotta hook up our backend here
     e.preventDefault();
 
-    if (localStorage.getItem('userInfo')) {
+    if (isLoggedIn) {
       toast.error('Already logged in');
       return;
     }
-    
+
     axios
       .post(`${import.meta.env.VITE_BASE_URL}/users/login`, {
         email: email,
         password: password,
       })
       .then((response) => {
-        console.log(response.data)
+        console.log(response.data);
+        login(response.data);
         toast.success('Logged in successfully');
-        localStorage.setItem('userInfo', response.data);
         navigate('/');
       })
       .catch((error) => {

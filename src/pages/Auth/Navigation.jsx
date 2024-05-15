@@ -1,23 +1,25 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Avatar, Dropdown, Navbar, Button } from 'flowbite-react';
-import { useState } from 'react';
+import { AuthContext } from '../../contexts/AuthContext';
+import { useContext } from 'react';
 
 const Navigation = () => {
-  // TODO: Implement login and logout handlers AND WE NEED USER INFO
   const navigate = useNavigate();
   const location = useLocation();
   const isActive = (path) => location.pathname === path;
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isLoggedIn, logout, userInfo } = useContext(AuthContext);
 
-  // TODO, FINSH THESE FUNCTIONS
   const logoutHandler = () => {
-    try {
-      setIsLoggedIn(false);
-      navigate('/');
-    } catch (error) {
-      toast.error('Error logging out');
+    if (isLoggedIn) {
+      try {
+        logout();
+        toast.success('Logged out successfully');
+        navigate('/login');
+      } catch (error) {
+        toast.error('Error logging out');
+      }
     }
   };
 
@@ -63,10 +65,11 @@ const Navigation = () => {
           >
             <Dropdown.Header>
               {/* Username */}
-              <span className="block text-sm">Bonnie Green</span>
+              <span className="block text-sm">{userInfo?.name}</span>
               {/* Email */}
+
               <span className="block truncate text-sm font-medium">
-                name@flowbite.com
+                {userInfo?.email}{' '}
               </span>
             </Dropdown.Header>
             {/* TODO If isAdmin, they have a dashboard */}
@@ -75,7 +78,7 @@ const Navigation = () => {
             <Dropdown.Item>Profile</Dropdown.Item>
             <Dropdown.Divider />
             {/* TODO If user is not logged in switch to login */}
-            {isLoggedIn ?? (
+            {isLoggedIn && (
               <Dropdown.Item onClick={logoutHandler}>Logout</Dropdown.Item>
             )}
           </Dropdown>
