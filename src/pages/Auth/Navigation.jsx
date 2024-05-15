@@ -11,15 +11,7 @@ const Navigation = () => {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const loginHandler = () => {
-    try {
-      setIsLoggedIn(true);
-      navigate('/');
-    } catch (error) {
-      toast.error('Error logging in');
-    }
-  };
-
+  // TODO, FINSH THESE FUNCTIONS
   const logoutHandler = () => {
     try {
       setIsLoggedIn(false);
@@ -57,10 +49,10 @@ const Navigation = () => {
       {/* User Dropdown if logged in, else Register button */}
       {!isLoggedIn ? (
         <Button
-          onClick={() => navigate('/register')}
-          className={`${isActive('/register') ? 'ring-2 ring-teal-300' : ''}`}
+          onClick={() => navigate('/login')}
+          className={`${isActive('/login') ? 'ring-2 ring-teal-300' : ''}`}
         >
-          Register
+          Login
         </Button>
       ) : (
         <div className="flex md:order-2">
@@ -83,10 +75,8 @@ const Navigation = () => {
             <Dropdown.Item>Profile</Dropdown.Item>
             <Dropdown.Divider />
             {/* TODO If user is not logged in switch to login */}
-            {isLoggedIn ? (
+            {isLoggedIn ?? (
               <Dropdown.Item onClick={logoutHandler}>Logout</Dropdown.Item>
-            ) : (
-              <Dropdown.Item onClick={loginHandler}>Login</Dropdown.Item>
             )}
           </Dropdown>
         </div>

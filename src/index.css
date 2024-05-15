@@ -6,3 +6,8 @@ html {
   background-color: #151515;
   color: white;
 }
+
+input {
+  background-color: #1e1e1e;
+  color: black
+} 

@@ -11,11 +11,13 @@ import {
 
 // Components
 import Register from './pages/Auth/Register.jsx';
+import Login from './pages/Auth/Login.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
       <Route path="/register" element={<Register />} />
+      <Route path="/login" element={<Login />} />
     </Route>
   )
 );
