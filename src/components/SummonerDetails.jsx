@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from 'react';
 import { Badge, Avatar } from 'flowbite-react';
+import { getAllLeagueRanks } from '../utils/leagueApi';
 
 const SummonerDetails = ({ summoner }) => {
   function selectRankImage(rank) {
@@ -79,8 +80,19 @@ const SummonerDetails = ({ summoner }) => {
   const [losses, setLosses] = useState(0);
   const [pastRank, setPastRank] = useState([]);
   const [recentlyUsedChamps, setRecentlyUsedChamps] = useState([]);
+  const [allLeagueRanks, setAllLeagueRanks] = useState([]);
 
   useEffect(() => {
+    const fetchRanks = async () => {
+      try {
+        const ranksData = await getAllLeagueRanks();
+        setAllLeagueRanks(ranksData);
+      } catch (error) {
+        console.error('Failed to fetch league ranks:', error);
+      }
+    };
+
+    fetchRanks();
     setSummonerName(
       username?.charAt(0).toUpperCase() + username?.slice(1).split('-')[0]
     );
@@ -89,7 +101,7 @@ const SummonerDetails = ({ summoner }) => {
     setWins(winLossRatio?.split('-')[0]);
     setLosses(winLossRatio?.split('-')[1]);
     setPastRank(pastRanks);
-    setRecentlyUsedChamps(champsUsed.slice(0, 5));
+    setRecentlyUsedChamps(champsUsed?.slice(0, 5));
   }, [summoner, username, winLossRatio, rank, pastRanks, champsUsed]);
 
   return (
@@ -113,8 +125,11 @@ const SummonerDetails = ({ summoner }) => {
         </p>
         <p>Win Percentage - {winPercentage}</p>
         <p>{lp} LP</p>
-        <div className="self-center mt-6">
-          <h2 className="font-semibold text-3xl">Most Played</h2>
+        <div
+          className="self-ce
+  const { name, playerBase } = allLeagueRanks[0] || {};nter mt-6"
+        >
+          <h2 className="font-semibold text-3xl text-center">Most Played</h2>
           {recentlyUsedChamps?.length > 0 ? (
             recentlyUsedChamps?.map((champ, index) => (
               <div key={index} className="text-xl my-1">
@@ -131,7 +146,16 @@ const SummonerDetails = ({ summoner }) => {
         </div>
       </div>
       <div>
-        <p>What can go here?</p>
+        <h2 className='text-center font-semibold text-3xl'>Player Base</h2>
+        <div className="grid grid-cols-3 text-center space-x-2 space-y-2">
+          {allLeagueRanks?.map((rank, index) => (
+            <div key={index}>
+              <img src={`./${rank.name.toLowerCase()}.webp`} alt="rank" />
+              <p>{rank.name}</p>
+              <p>{rank.playerBase}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

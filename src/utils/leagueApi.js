@@ -27,19 +27,19 @@ export const getPlayerRank = async (summonerName, tagLine, region) => {
   }
 };
 
-export const getChampion = async (championName) => {
-  try {
-    const response = await api.get("/api/selectChamp", {
-      params: {
-        name: championName,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching champion:", error);
-    throw error;
-  }
-};
+// export const getChampion = async (championName) => {
+//   try {
+//     const response = await api.get("/api/selectChamp", {
+//       params: {
+//         name: championName,
+//       },
+//     });
+//     return response.data;
+//   } catch (error) {
+//     console.error("Error fetching champion:", error);
+//     throw error;
+//   }
+// };
 
 export const getTwitchStreams = async () => {
   try {
@@ -54,3 +54,13 @@ export const getTwitchStreams = async () => {
     throw error;
   }
 };
+
+export const getAllLeagueRanks = async () => {
+  try {
+    const response = await api.get("/api/getLoLRanks");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching ranks:", error);
+    throw error;
+  }
+}

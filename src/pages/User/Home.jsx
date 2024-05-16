@@ -10,7 +10,7 @@ const Home = () => {
   const [tag, setTag] = useState('');
   const [region, setRegion] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState(null);
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
