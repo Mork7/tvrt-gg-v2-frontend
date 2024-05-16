@@ -125,10 +125,7 @@ const SummonerDetails = ({ summoner }) => {
         </p>
         <p>Win Percentage - {winPercentage}</p>
         <p>{lp} LP</p>
-        <div
-          className="self-ce
-  const { name, playerBase } = allLeagueRanks[0] || {};nter mt-6"
-        >
+        <div className="self-center mt-6">
           <h2 className="font-semibold text-3xl text-center">Most Played</h2>
           {recentlyUsedChamps?.length > 0 ? (
             recentlyUsedChamps?.map((champ, index) => (
@@ -146,7 +143,7 @@ const SummonerDetails = ({ summoner }) => {
         </div>
       </div>
       <div>
-        <h2 className='text-center font-semibold text-3xl'>Player Base</h2>
+        <h2 className="text-center font-semibold text-3xl">Player Base</h2>
         <div className="grid grid-cols-3 text-center space-x-2 space-y-2">
           {allLeagueRanks?.map((rank, index) => (
             <div key={index}>

@@ -1,15 +1,17 @@
 import axios from 'axios';
 import { useContext, useEffect, useState, useRef } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { getPlayerRank } from '../../utils/leagueApi';
+import { Spinner } from 'flowbite-react';
 
 const Leaderboard = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const { isLoggedIn } = useContext(AuthContext);
-  const [followingStats, setFollowingStats] = useState([]);
+  const [followingStats, setFollowingStats] = useState(null);
   const hasFetched = useRef(false); // useRef to track if data has been fetched
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchUserFollowing = async () => {
@@ -30,7 +32,9 @@ const Leaderboard = () => {
           );
 
           const stats = await Promise.all(statsPromises);
-          setFollowingStats(...stats);
+          const flattenedStats = stats.flat();
+          setFollowingStats(flattenedStats);
+          setIsLoading(false);
         } catch (error) {
           console.error('An error occurred:', error.response || error.message);
         }
@@ -42,9 +46,51 @@ const Leaderboard = () => {
     }
   }, [isLoggedIn]);
 
-  console.log(followingStats);
+  function selectRankImage(rank) {
+    const imagePathDict = {
+      unranked: './unranked.png',
+      iron: './iron.webp',
+      bronze: './bronze.webp',
+      silver: './silver.webp',
+      gold: './gold.webp',
+      platinum: './platinum.webp',
+      emerald: './emerald.webp',
+      diamond: './diamond.webp',
+      master: './master.webp',
+      grandmaster: './grandmaster.webp',
+      challenger: './challenger.webp',
+    };
+
+    switch (true) {
+      case rank?.toLowerCase().includes('unranked'):
+        return imagePathDict.unranked;
+      case rank?.toLowerCase().includes('iron'):
+        return imagePathDict.iron;
+      case rank?.toLowerCase().includes('bronze'):
+        return imagePathDict.bronze;
+      case rank?.toLowerCase().includes('silver'):
+        return imagePathDict.silver;
+      case rank?.toLowerCase().includes('gold'):
+        return imagePathDict.gold;
+      case rank?.toLowerCase().includes('platinum'):
+        return imagePathDict.platinum;
+      case rank?.toLowerCase().includes('emerald'):
+        return imagePathDict.emerald;
+      case rank?.toLowerCase().includes('diamond'):
+        return imagePathDict.diamond;
+      case rank?.toLowerCase().includes('grand'):
+        return imagePathDict.grandmaster;
+      case rank?.toLowerCase().includes('master'):
+        return imagePathDict.master;
+      case rank?.toLowerCase().includes('challenger'):
+        return imagePathDict.challenger;
+      default:
+        // Handle cases where no match is found
+        return undefined;
+    }
+  }
   return (
-    <div>
+    <div className='flex flex-col items-center w-full'>
       {!isLoggedIn ? (
         <h1 className="text-center text-3xl">
           To render this leaderboard, you must be{' '}
@@ -56,33 +102,38 @@ const Leaderboard = () => {
           </a>{' '}
           and following the users you wish to compare.
         </h1>
+      ) : isLoading ? (
+        <Spinner className='mt-56' size={'xl'}/>
       ) : (
-        <div>
-          <h1 className="text-center text-3xl">Leaderboard</h1>
-          <table className='border'>
-            <thead className='border'>
-              <tr>
-                <td className='border p-3'>
-                  Summoner Name
-                </td>
-                <td className='border p-3'>
-                  Rank
-                </td>
-                <td className='border p-3'>
-                  Win-Loss Ratio
-                </td>
-                <td className='border p-3'>
-                  Win Percentage
-                </td>
+        <div className="flex flex-col space-y-5 w-full">
+          <h1 className="text-center text-5xl font-semibold">Following</h1>
+          <table className="border text-2xl">
+            <thead className="border">
+              <tr className="font-semibold">
+                <td className="border p-3">Summoner Name</td>
+                <td className="border p-3">Rank</td>
+                <td className="border p-3">Win-Loss Ratio</td>
+                <td className="border p-3">Win Percentage</td>
               </tr>
             </thead>
             <tbody>
-              {followingStats.map((user, index) => (
+              {followingStats?.map((user, index) => (
                 <tr key={index}>
-                  <td className='border p-3'>{user?.username}</td>
-                  <td className='border p-3'> {user?.rank} </td>
-                  <td className='border p-3'>{user?.winLossRatio}</td>
-                  <td className='border p-3'> {user?.winPercentage}</td>
+                  <td className="border p-3">
+                    {user?.username.split('-')[0] +
+                      ' #' +
+                      user?.username.split('-')[1].toUpperCase()}
+                  </td>
+                  <td className="border p-3 flex ">
+                    <img
+                      src={`${selectRankImage(user?.rank)}`}
+                      alt="rank"
+                      className="mr-2 w-10"
+                    />
+                    {user?.rank}{' '}
+                  </td>
+                  <td className="border p-3">{user?.winLossRatio}</td>
+                  <td className="border p-3"> {user?.winPercentage}</td>
                 </tr>
               ))}
             </tbody>
