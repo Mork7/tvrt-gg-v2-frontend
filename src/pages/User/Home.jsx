@@ -57,7 +57,7 @@ const Home = () => {
             onChange={(e) => setTag(e.target.value)}
           />
           {/* Region */}
-          <h2 className="font-semibold">Region</h2>
+          <label className="font-semibold">Region</label>
           <div className="flex justify-between space-x-4">
             <div>
               <div>

@@ -17,6 +17,7 @@ import Register from './pages/Auth/Register.jsx';
 import Login from './pages/Auth/Login.jsx';
 import Home from './pages/User/Home.jsx';
 import Following from './pages/User/Following.jsx';
+import Profile from './pages/User/Profile.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -24,6 +25,7 @@ const router = createBrowserRouter(
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
       <Route path="/following" element={<Following />} />
+      <Route path="/profile" element={<Profile />} />
       <Route path="/" element={<Home />} />
     </Route>
   )

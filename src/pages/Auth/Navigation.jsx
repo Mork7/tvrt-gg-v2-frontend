@@ -4,6 +4,7 @@ import { Avatar, Dropdown, Navbar, Button } from 'flowbite-react';
 import { AuthContext } from '../../contexts/AuthContext';
 import { useContext } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const Navigation = () => {
   const navigate = useNavigate();
@@ -52,12 +53,14 @@ const Navigation = () => {
 
   return (
     <Navbar fluid rounded className="bg-gray-800 text-white h-16 p-3 ">
-      <span className="text-3xl font-semibold">TVRT.GG</span>
+      <Link href="/" className="text-3xl font-semibold">
+        TVRT.GG
+      </Link>
 
       {/* Nav buttons */}
       <Navbar.Collapse>
         <Navbar.Link href="/" active={isActive('/')} className="text-xl">
-          Home
+          Search
         </Navbar.Link>
         <Navbar.Link
           href="/following"
@@ -89,9 +92,9 @@ const Navigation = () => {
             arrowIcon={false}
             inline
             label={<Avatar alt="User settings" rounded />}
-            className='bg-gray-600'
+            className="bg-gray-600"
           >
-            <Dropdown.Header className=' text-black'>
+            <Dropdown.Header className=" text-black">
               {/* Username */}
               <span className="block text-lg">{userInfo?.name}</span>
               {/* Email */}
@@ -101,15 +104,28 @@ const Navigation = () => {
             </Dropdown.Header>
             {/* TODO If isAdmin, they have a dashboard */}
             {userInfo?.isAdmin && (
-              <Dropdown.Item onClick={clickDashboardHandler} className=' text-black text-lg'>
+              <Dropdown.Item
+                onClick={clickDashboardHandler}
+                className=" text-black text-lg"
+              >
                 Dashboard
               </Dropdown.Item>
             )}
-            <Dropdown.Item onClick={clickProfileHandler} className=' text-black text-lg'>Profile</Dropdown.Item>
+            <Dropdown.Item
+              onClick={clickProfileHandler}
+              className=" text-black text-lg"
+            >
+              Profile
+            </Dropdown.Item>
             <Dropdown.Divider />
             {/* If logged in display logout button */}
             {isLoggedIn && (
-              <Dropdown.Item onClick={logoutHandler} className=' text-black text-lg'>Logout</Dropdown.Item>
+              <Dropdown.Item
+                onClick={logoutHandler}
+                className=" text-black text-lg"
+              >
+                Logout
+              </Dropdown.Item>
             )}
           </Dropdown>
         </div>
