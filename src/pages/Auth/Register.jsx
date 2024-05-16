@@ -26,7 +26,7 @@ const Register = () => {
 
     if (password === confirmPassword) {
       axios
-        .post(`${import.meta.env.VITE_BASE_URI}/users/register`, {
+        .post(`${import.meta.env.VITE_BACKEND_BASE_URI}/users/register`, {
           name: username,
           email: email,
           password: password,

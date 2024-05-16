@@ -31,6 +31,7 @@ const Home = () => {
     <section className="flex justify-center">
       <div>
         <h1 className="font-semibold text-3xl mb-3">Search For Summoner</h1>
+        {/* Summoner search form */}
         <form
           onSubmit={onSubmitHandler}
           className="flex flex-col space-y-3 w-[30rem]"
@@ -248,7 +249,7 @@ const Home = () => {
         ) : results ? (
           <SummonerDetails summoner={results} />
         ) : (
-          <img src="https://images7.alphacoders.com/536/536426.png" alt="" />
+          <img src="https://images7.alphacoders.com/536/536426.png" alt="Yasuo" />
         )}
       </div>
     </section>

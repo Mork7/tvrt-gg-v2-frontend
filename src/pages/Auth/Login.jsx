@@ -22,10 +22,16 @@ const Login = () => {
     }
 
     axios
-      .post(`${import.meta.env.VITE_BASE_URI}/users/login`, {
-        email: email,
-        password: password,
-      })
+      .post(
+        `${import.meta.env.VITE_BACKEND_BASE_URI}/users/login`,
+        {
+          email: email,
+          password: password,
+        },
+        {
+          withCredentials: true, // Include credentials (cookies)
+        }
+      )
       .then((response) => {
         console.log(response.data);
         login(response.data);
@@ -79,7 +85,7 @@ const Login = () => {
           </a>
         </p>
       </div>
-      <div className='h-[51.5rem] w-[80rem] ml-12 rounded-lg flex justify-center p-4'>
+      <div className="h-[51.5rem] w-[80rem] ml-12 rounded-lg flex justify-center p-4">
         <img
           src="https://s1.picswalls.com/wallpapers/2015/11/21/beautiful-league-of-legends-wallpaper_111229615_289.jpg"
           alt="Baron Nashor"

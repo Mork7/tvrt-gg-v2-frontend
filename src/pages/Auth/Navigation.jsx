@@ -3,6 +3,7 @@ import { toast } from 'react-toastify';
 import { Avatar, Dropdown, Navbar, Button } from 'flowbite-react';
 import { AuthContext } from '../../contexts/AuthContext';
 import { useContext } from 'react';
+import axios from 'axios';
 
 const Navigation = () => {
   const navigate = useNavigate();
@@ -12,14 +13,30 @@ const Navigation = () => {
   const { isLoggedIn, logout, userInfo } = useContext(AuthContext);
 
   const logoutHandler = () => {
-    if (isLoggedIn) {
-      try {
-        logout();
-        toast.success('Logged out successfully');
-        navigate('/login');
-      } catch (error) {
-        toast.error('Error logging out');
-      }
+    if (isLoggedIn && userInfo) {
+      axios
+        .post(
+          `${import.meta.env.VITE_BACKEND_BASE_URI}/users/logout`,
+          {},
+          {
+            withCredentials: true, // Include credentials (cookies)
+          }
+        )
+        .then((response) => {
+          logout(); // Clear user info and auth state
+          console.log('Logout successful:', response.data);
+          toast.success('Logged out successfully');
+          navigate('/login'); // Navigate to login page
+        })
+        .catch((error) => {
+          console.error(
+            'Logout error:',
+            error.response || error.message || error
+          );
+          toast.error('Error logging out');
+        });
+    } else {
+      console.warn('User is not logged in or userInfo is missing');
     }
   };
 

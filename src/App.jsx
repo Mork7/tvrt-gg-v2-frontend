@@ -7,7 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 function App() {
   return (
     <>
-      <ToastContainer theme='dark' />
+      <ToastContainer theme='dark' style={{marginTop: "45px"}} />
       <Navigation />
       <main className="m-[2rem]">
         <Outlet />
