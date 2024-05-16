@@ -107,7 +107,7 @@ const Leaderboard = () => {
           </h1>
         ) : isLoading ? (
           <>
-            <h1>Fetching...</h1>
+            <h1>Fetching following table...</h1>
             <Spinner className="mt-56" size={'xl'} />
           </>
         ) : (

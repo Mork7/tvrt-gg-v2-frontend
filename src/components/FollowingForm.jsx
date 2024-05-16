@@ -12,7 +12,7 @@ const FollowingForm = () => {
   return (
     <form
       onSubmit={onSubmitHandler}
-      className="flex flex-col space-y-3 w-[40rem] mt-5 "
+      className="flex flex-col space-y-3 w-[40rem] mt-5 border p-3 rounded-md"
     >
       <label htmlFor="name">Summoner Name</label>
       <input
