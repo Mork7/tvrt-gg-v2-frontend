@@ -60,11 +60,11 @@ const Navigation = () => {
           Home
         </Navbar.Link>
         <Navbar.Link
-          href="/leaderboard"
-          active={isActive('/leaderboard')}
+          href="/following"
+          active={isActive('/following')}
           className="text-xl"
         >
-          Leaderboard
+          Following
         </Navbar.Link>
         <Navbar.Link
           href="/friends"
@@ -89,26 +89,27 @@ const Navigation = () => {
             arrowIcon={false}
             inline
             label={<Avatar alt="User settings" rounded />}
+            className='bg-gray-600'
           >
-            <Dropdown.Header>
+            <Dropdown.Header className=' text-black'>
               {/* Username */}
-              <span className="block text-sm">{userInfo?.name}</span>
+              <span className="block text-lg">{userInfo?.name}</span>
               {/* Email */}
-              <span className="block truncate text-sm font-medium">
+              <span className="block truncate text-lg font-medium">
                 {userInfo?.email}
               </span>
             </Dropdown.Header>
             {/* TODO If isAdmin, they have a dashboard */}
             {userInfo?.isAdmin && (
-              <Dropdown.Item onClick={clickDashboardHandler}>
+              <Dropdown.Item onClick={clickDashboardHandler} className=' text-black text-lg'>
                 Dashboard
               </Dropdown.Item>
             )}
-            <Dropdown.Item onClick={clickProfileHandler}>Profile</Dropdown.Item>
+            <Dropdown.Item onClick={clickProfileHandler} className=' text-black text-lg'>Profile</Dropdown.Item>
             <Dropdown.Divider />
             {/* If logged in display logout button */}
             {isLoggedIn && (
-              <Dropdown.Item onClick={logoutHandler}>Logout</Dropdown.Item>
+              <Dropdown.Item onClick={logoutHandler} className=' text-black text-lg'>Logout</Dropdown.Item>
             )}
           </Dropdown>
         </div>

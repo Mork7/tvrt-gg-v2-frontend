@@ -16,12 +16,14 @@ import { AuthProvider } from './contexts/AuthContext.jsx';
 import Register from './pages/Auth/Register.jsx';
 import Login from './pages/Auth/Login.jsx';
 import Home from './pages/User/Home.jsx';
+import Following from './pages/User/Following.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/following" element={<Following />} />
       <Route path="/" element={<Home />} />
     </Route>
   )
