@@ -79,11 +79,11 @@ const Login = () => {
           </a>
         </p>
       </div>
-      <div>
+      <div className='h-[51.5rem] w-[80rem] ml-12 rounded-lg flex justify-center p-4'>
         <img
           src="https://s1.picswalls.com/wallpapers/2015/11/21/beautiful-league-of-legends-wallpaper_111229615_289.jpg"
-          alt="War Room"
-          className="h-[51.5rem] w-[80rem] ml-12 rounded-lg"
+          alt="Baron Nashor"
+          className="rounded-lg w-full"
         />
       </div>
     </section>

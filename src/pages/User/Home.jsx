@@ -245,8 +245,10 @@ const Home = () => {
           <div className="self-center">
             <Spinner aria-label="Extra large spinner example" size="xl" />
           </div>
+        ) : results ? (
+          <SummonerDetails summoner={results} />
         ) : (
-          results && <SummonerDetails summoner={results} />
+          <img src="https://images7.alphacoders.com/536/536426.png" alt="" />
         )}
       </div>
     </section>
