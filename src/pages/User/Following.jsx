@@ -90,7 +90,7 @@ const Leaderboard = () => {
     }
   }
   return (
-    <div className='flex flex-col items-center w-full'>
+    <div className="flex flex-col items-center w-full">
       {!isLoggedIn ? (
         <h1 className="text-center text-3xl">
           To render this leaderboard, you must be{' '}
@@ -103,7 +103,10 @@ const Leaderboard = () => {
           and following the users you wish to compare.
         </h1>
       ) : isLoading ? (
-        <Spinner className='mt-56' size={'xl'}/>
+        <>
+          <h1>Fetching...</h1>
+          <Spinner className="mt-56" size={'xl'} />
+        </>
       ) : (
         <div className="flex flex-col space-y-5 w-full">
           <h1 className="text-center text-5xl font-semibold">Following</h1>
