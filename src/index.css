@@ -5,9 +5,10 @@
 html {
   background-color: #151515;
   color: white;
+  font-family: 'Oswald', sans-serif;
 }
 
 input {
   background-color: #1e1e1e;
-  color: black
-} 
+  color: black;
+}
