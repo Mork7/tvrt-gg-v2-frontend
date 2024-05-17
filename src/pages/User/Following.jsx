@@ -1,32 +1,38 @@
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 import { getPlayerRank } from '../../utils/leagueApi';
-import { Spinner } from 'flowbite-react';
+import { Spinner, Button } from 'flowbite-react';
 import { toast } from 'react-toastify';
-import FollowingForm from '../../components/FollowingForm';
+import FollowingModal from '../../components/FollowingModal';
 
-const Leaderboard = () => {
+const Following = () => {
   const { isLoggedIn } = useContext(AuthContext);
-  const [followingStats, setFollowingStats] = useState(JSON.parse(localStorage.getItem('followingStats')) || null);
+  const [followingStats, setFollowingStats] = useState(
+    JSON.parse(localStorage.getItem('followingStats')) || []
+  );
   const [isLoading, setIsLoading] = useState(true);
+  const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+  const [showAddSummoner, setShowAddSummoner] = useState(false);
 
   useEffect(() => {
     const fetchFollowingStats = async () => {
       try {
-        const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-        console.log(userInfo);
         const { following } = userInfo;
-        console.log(following);
 
         // Fetch player stats for each user in the following list
         const statsPromises = following.map((user) =>
           getPlayerRank(user.summonerName, user.tag, user.region)
         );
 
+        // await for all the player stats to be fetched
         const stats = await Promise.all(statsPromises);
+        // flatten the array of arrays to get the objects
         const flattenedStats = stats.flat();
+        // update the state with the fetched stats
         setFollowingStats(flattenedStats);
+        // update the local storage with the fetched stats
         localStorage.setItem('followingStats', JSON.stringify(flattenedStats));
+        // notify the user that the stats have been fetched
         toast.success('Fetched summoners stats successfully');
       } catch (error) {
         console.error(`Error fetching following stats: ${error.message}`);
@@ -35,13 +41,15 @@ const Leaderboard = () => {
         setIsLoading(false); // Ensure loading state is updated
       }
     };
-    
-    if (isLoggedIn && followingStats === null) {
+
+
+    // if the following stats array is empty that means there is nothing local storage so we fetch
+    if (isLoggedIn && followingStats.length === 0) {
       fetchFollowingStats();
     } else {
       setIsLoading(false);
     }
-  }, [isLoggedIn, followingStats]);
+  }, [isLoggedIn, followingStats.length, userInfo]);
 
   const selectRankImage = (rank) => {
     const imagePathDict = {
@@ -87,6 +95,34 @@ const Leaderboard = () => {
     }
   };
 
+  const onClose = () => {
+    setShowAddSummoner(false);
+  };
+
+  // if a summoner is added to the following list from the modal
+  const handleAddSummoner = async (newSummoner) => {
+    try {
+      // Fetch the new summoner's stats
+      const newStats = await getPlayerRank(
+        newSummoner.summonerName,
+        newSummoner.tag,
+        newSummoner.region
+      );  
+
+      // Ensure the stats are properly formatted
+      const updatedStats = [...followingStats, ...newStats];
+      
+      // Update the local storage with the new summoner's stats
+      localStorage.setItem('followingStats', JSON.stringify(updatedStats));
+      // Update the followingStats array with the new summoner's stats, this will cause a re-render and the stats will be pulled from local storage
+      setFollowingStats(updatedStats);
+      // Notify the user that the new summoner's stats have been fetched
+      toast.success('Fetched new summoner stats successfully');
+    } catch (error) {
+      console.error(`Error fetching new summoner stats: ${error.message}`);
+      toast.error(`Error fetching new summoner stats: ${error.message}`);
+    }
+  };
   return (
     <>
       <div className="flex flex-col items-center w-full">
@@ -108,12 +144,23 @@ const Leaderboard = () => {
           </>
         ) : (
           <div className="flex flex-col space-y-5 w-full">
-            <h1 className="text-center text-5xl font-semibold">Following</h1>
+            <h1 className="text-center text-5xl font-semibold">
+              <span>{userInfo.name}&apos;s Boys</span>
+            </h1>
             {/* OUR TABLE */}
             <table className="border text-2xl">
               <thead className="border">
                 <tr className="font-semibold">
-                  <td className="border p-3">Summoner Name</td>
+                  <td className="border p-3 flex justify-between">
+                    Summoner Name{' '}
+                    <Button
+                      onClick={() => setShowAddSummoner(!showAddSummoner)}
+                      style={{ color: 'white', width: '3rem', height: '2rem' }}
+                      className="flex justify-center items-center"
+                    >
+                      <span className="text-5xl">+</span>
+                    </Button>
+                  </td>
                   <td className="border p-3">Rank</td>
                   <td className="border p-3">Win-Loss Ratio</td>
                   <td className="border p-3">Win Percentage</td>
@@ -123,9 +170,9 @@ const Leaderboard = () => {
                 {followingStats?.map((user, index) => (
                   <tr key={index}>
                     <td className="border p-3">
-                      {user?.username.split('-')[0] +
+                      {user?.username?.split('-')[0] +
                         ' #' +
-                        user?.username.split('-')[1].toUpperCase()}
+                        user?.username?.split('-')[1].toUpperCase()}
                     </td>
                     <td className="border p-3 flex ">
                       <img
@@ -146,9 +193,11 @@ const Leaderboard = () => {
         )}
       </div>
       {/* form should be visible whether or not user is following anyone */}
-      <FollowingForm />
+      {showAddSummoner && (
+        <FollowingModal onClose={onClose} onAddSummoner={handleAddSummoner} />
+      )}
     </>
   );
 };
 
-export default Leaderboard;
+export default Following;

@@ -88,6 +88,7 @@ const Navigation = () => {
         </Button>
       ) : (
         <div className="flex md:order-2">
+          <p className='self-center mr-3'>{userInfo?.name}</p>
           <Dropdown
             arrowIcon={false}
             inline
