@@ -1,5 +1,4 @@
-import axios from 'axios';
-import { useContext, useEffect, useState, useRef } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 import { getPlayerRank } from '../../utils/leagueApi';
 import { Spinner } from 'flowbite-react';
@@ -8,44 +7,41 @@ import FollowingForm from '../../components/FollowingForm';
 
 const Leaderboard = () => {
   const { isLoggedIn } = useContext(AuthContext);
-  const [followingStats, setFollowingStats] = useState(null);
-  const hasFetched = useRef(false); // useRef to track if data has been fetched
+  const [followingStats, setFollowingStats] = useState(JSON.parse(localStorage.getItem('followingStats')) || null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchUserFollowing = async () => {
-      if (isLoggedIn && !hasFetched.current) {
-        hasFetched.current = true;
-        try {
-          const response = await axios.get(
-            `${import.meta.env.VITE_BACKEND_BASE_URI}/users/following`,
-            {
-              withCredentials: true, // Include credentials (cookies)
-            }
-          );
-          const following = response.data;
+    const fetchFollowingStats = async () => {
+      try {
+        const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+        console.log(userInfo);
+        const { following } = userInfo;
+        console.log(following);
 
-          // Fetch player stats for each user in the following list
-          const statsPromises = following.map((user) =>
-            getPlayerRank(user.summonerName, user.tag, user.region)
-          );
+        // Fetch player stats for each user in the following list
+        const statsPromises = following.map((user) =>
+          getPlayerRank(user.summonerName, user.tag, user.region)
+        );
 
-          const stats = await Promise.all(statsPromises);
-          const flattenedStats = stats.flat();
-          setFollowingStats(flattenedStats);
-          setIsLoading(false);
-          toast.success('Fetched stats successfully');
-        } catch (error) {
-          console.error('An error occurred:', error.response || error.message);
-          toast.error('Error fetching stats');
-        }
+        const stats = await Promise.all(statsPromises);
+        const flattenedStats = stats.flat();
+        setFollowingStats(flattenedStats);
+        localStorage.setItem('followingStats', JSON.stringify(flattenedStats));
+        toast.success('Fetched summoners stats successfully');
+      } catch (error) {
+        console.error(`Error fetching following stats: ${error.message}`);
+        toast.error(`Error fetching following stats: ${error.message}`);
+      } finally {
+        setIsLoading(false); // Ensure loading state is updated
       }
     };
-
-    if (isLoggedIn) {
-      fetchUserFollowing();
+    
+    if (isLoggedIn && followingStats === null) {
+      fetchFollowingStats();
+    } else {
+      setIsLoading(false);
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, followingStats]);
 
   const selectRankImage = (rank) => {
     const imagePathDict = {
@@ -108,7 +104,7 @@ const Leaderboard = () => {
         ) : isLoading ? (
           <>
             <h1>Fetching following table...</h1>
-            <Spinner className="mt-56" size={'xl'} />
+            <Spinner className="my-10" size={'xl'} />
           </>
         ) : (
           <div className="flex flex-col space-y-5 w-full">
@@ -148,8 +144,8 @@ const Leaderboard = () => {
             {/* OUR FORM TO ADD SUMMONERS WE'D LIKE TO FOLLOW */}
           </div>
         )}
-        {/* form should be visible whether or not user is following anyone */}
       </div>
+      {/* form should be visible whether or not user is following anyone */}
       <FollowingForm />
     </>
   );
