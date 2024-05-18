@@ -33,7 +33,11 @@ export const getPlayerRank = async (
         if (retries < MAX_RETRIES) {
             return getPlayerRank(summonerName, tagLine, region, retries + 1);
         } else {
-            throw error;
+            const errorInfo = {
+                message: "Summoner doesn't exist",
+                params: error.response.config.params,
+            };
+            throw errorInfo;
         }
     }
 };

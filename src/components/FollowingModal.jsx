@@ -21,7 +21,7 @@ const FollowingModal = ({ onClose, onAddSummoner }) => {
         { withCredentials: true }
       );
       
-      toast.success('Summoner followed successfully');
+      toast.warn('Adding summoner...');
       onAddSummoner(newSummoner);
       onClose();
     } catch (error) {
@@ -50,6 +50,7 @@ const FollowingModal = ({ onClose, onAddSummoner }) => {
           id="tag"
           className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
           onChange={(e) => setTag(e.target.value)}
+          maxLength={4}
           required
         />
         <label className="font-semibold">Region</label>

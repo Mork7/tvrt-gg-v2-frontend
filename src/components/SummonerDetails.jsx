@@ -2,51 +2,10 @@
 import { useState, useEffect } from 'react';
 import { Badge, Avatar } from 'flowbite-react';
 import { getAllLeagueRanks } from '../utils/leagueApi';
+import selectRankImage from '../utils/selectRankImage';
 
 const SummonerDetails = ({ summoner }) => {
-  function selectRankImage(rank) {
-    const imagePathDict = {
-      unranked: './unranked.png',
-      iron: './iron.webp',
-      bronze: './bronze.webp',
-      silver: './silver.webp',
-      gold: './gold.webp',
-      platinum: './platinum.webp',
-      emerald: './emerald.webp',
-      diamond: './diamond.webp',
-      master: './master.webp',
-      grandmaster: './grandmaster.webp',
-      challenger: './challenger.webp',
-    };
 
-    switch (true) {
-      case rank?.toLowerCase().includes('unranked'):
-        return imagePathDict.unranked;
-      case rank?.toLowerCase().includes('iron'):
-        return imagePathDict.iron;
-      case rank?.toLowerCase().includes('bronze'):
-        return imagePathDict.bronze;
-      case rank?.toLowerCase().includes('silver'):
-        return imagePathDict.silver;
-      case rank?.toLowerCase().includes('gold'):
-        return imagePathDict.gold;
-      case rank?.toLowerCase().includes('platinum'):
-        return imagePathDict.platinum;
-      case rank?.toLowerCase().includes('emerald'):
-        return imagePathDict.emerald;
-      case rank?.toLowerCase().includes('diamond'):
-        return imagePathDict.diamond;
-      case rank?.toLowerCase().includes('grand'):
-        return imagePathDict.grandmaster;
-      case rank?.toLowerCase().includes('master'):
-        return imagePathDict.master;
-      case rank?.toLowerCase().includes('challenger'):
-        return imagePathDict.challenger;
-      default:
-        // Handle cases where no match is found
-        return undefined;
-    }
-  }
 
   function capitalizeRank(rankStr) {
     // Ranks are formatted as "S2024 S1 platinum 1"

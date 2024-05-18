@@ -4,6 +4,7 @@ import { getPlayerRank } from '../../utils/leagueApi';
 import { Spinner, Button } from 'flowbite-react';
 import { toast } from 'react-toastify';
 import FollowingModal from '../../components/FollowingModal';
+import selectRankImage from '../../utils/selectRankImage';
 
 const Following = () => {
   const { isLoggedIn } = useContext(AuthContext);
@@ -13,6 +14,7 @@ const Following = () => {
   const [isLoading, setIsLoading] = useState(true);
   const userInfo = JSON.parse(localStorage.getItem('userInfo'));
   const [showAddSummoner, setShowAddSummoner] = useState(false);
+  const [mayNotExist, setMayNotExist] = useState([]);
 
   useEffect(() => {
     const fetchFollowingStats = async () => {
@@ -25,9 +27,32 @@ const Following = () => {
         );
 
         // await for all the player stats to be fetched
-        const stats = await Promise.all(statsPromises);
+        const stats = await Promise.allSettled(statsPromises);
+        // Collect the names of the summoners that don't exist
+        const rejectedSummoners = stats
+          .filter((result) => result.status === 'rejected')
+          .map(
+            (result) =>
+              result.reason.params.name.split('-')[0] +
+              ' #' +
+              result.reason.params.name.split('-')[1].toUpperCase()
+          );
+
+        setMayNotExist(rejectedSummoners);
+
+        if (rejectedSummoners.length > 0) {
+          toast.error(
+            `The following summoners may not exist: ${rejectedSummoners.join(
+              ', '
+            )}`
+          );
+        }
+        // filter out the fulfilled promises so we don't have to deal with the rejected ones
+        const fullfilledStats = stats
+          .filter((result) => result.status === 'fulfilled')
+          .map((result) => result.value);
         // flatten the array of arrays to get the objects
-        const flattenedStats = stats.flat();
+        const flattenedStats = fullfilledStats.flat();
         // update the state with the fetched stats
         setFollowingStats(flattenedStats);
         // update the local storage with the fetched stats
@@ -36,12 +61,11 @@ const Following = () => {
         toast.success('Fetched summoners stats successfully');
       } catch (error) {
         console.error(`Error fetching following stats: ${error.message}`);
-        toast.error(`Error fetching following stats: ${error.message}`);
+        toast.error('Error fetching stats');
       } finally {
         setIsLoading(false); // Ensure loading state is updated
       }
     };
-
 
     // if the following stats array is empty that means there is nothing local storage so we fetch
     if (isLoggedIn && followingStats.length === 0) {
@@ -50,50 +74,6 @@ const Following = () => {
       setIsLoading(false);
     }
   }, [isLoggedIn, followingStats.length, userInfo]);
-
-  const selectRankImage = (rank) => {
-    const imagePathDict = {
-      unranked: './unranked.png',
-      iron: './iron.webp',
-      bronze: './bronze.webp',
-      silver: './silver.webp',
-      gold: './gold.webp',
-      platinum: './platinum.webp',
-      emerald: './emerald.webp',
-      diamond: './diamond.webp',
-      master: './master.webp',
-      grandmaster: './grandmaster.webp',
-      challenger: './challenger.webp',
-    };
-
-    switch (true) {
-      case rank?.toLowerCase().includes('unranked'):
-        return imagePathDict.unranked;
-      case rank?.toLowerCase().includes('iron'):
-        return imagePathDict.iron;
-      case rank?.toLowerCase().includes('bronze'):
-        return imagePathDict.bronze;
-      case rank?.toLowerCase().includes('silver'):
-        return imagePathDict.silver;
-      case rank?.toLowerCase().includes('gold'):
-        return imagePathDict.gold;
-      case rank?.toLowerCase().includes('platinum'):
-        return imagePathDict.platinum;
-      case rank?.toLowerCase().includes('emerald'):
-        return imagePathDict.emerald;
-      case rank?.toLowerCase().includes('diamond'):
-        return imagePathDict.diamond;
-      case rank?.toLowerCase().includes('grand'):
-        return imagePathDict.grandmaster;
-      case rank?.toLowerCase().includes('master'):
-        return imagePathDict.master;
-      case rank?.toLowerCase().includes('challenger'):
-        return imagePathDict.challenger;
-      default:
-        // Handle cases where no match is found
-        return undefined;
-    }
-  };
 
   const onClose = () => {
     setShowAddSummoner(false);
@@ -107,22 +87,31 @@ const Following = () => {
         newSummoner.summonerName,
         newSummoner.tag,
         newSummoner.region
-      );  
+      );
 
       // Ensure the stats are properly formatted
       const updatedStats = [...followingStats, ...newStats];
-      
+
       // Update the local storage with the new summoner's stats
       localStorage.setItem('followingStats', JSON.stringify(updatedStats));
       // Update the followingStats array with the new summoner's stats, this will cause a re-render and the stats will be pulled from local storage
       setFollowingStats(updatedStats);
       // Notify the user that the new summoner's stats have been fetched
-      toast.success('Fetched new summoner stats successfully');
+      toast.success('Add new summoner successfully');
     } catch (error) {
+      setMayNotExist([
+        ...mayNotExist,
+        newSummoner.summonerName +
+          ' #' +
+          newSummoner.tag.toUpperCase() +
+          ' - ' +
+          newSummoner.region.toUpperCase(),
+      ]);
       console.error(`Error fetching new summoner stats: ${error.message}`);
       toast.error(`Error fetching new summoner stats: ${error.message}`);
     }
   };
+
   return (
     <>
       <div className="flex flex-col items-center w-full">
@@ -183,15 +172,36 @@ const Following = () => {
                       {user?.rank}{' '}
                     </td>
                     <td className="border p-3">{user?.winLossRatio}</td>
-                    <td className="border p-3"> {user?.winPercentage}</td>
+                    <td className="border p-3">
+                      {' '}
+                      {isNaN(user?.winPercentage[0])
+                        ? '0%'
+                        : user?.winPercentage}
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-            {/* OUR FORM TO ADD SUMMONERS WE'D LIKE TO FOLLOW */}
+            <div>
+              {mayNotExist.length > 0 && (
+                <>
+                  <h2>
+                    The following summoner(s) you follow may not exist, check
+                    spelling and whether or not they have made a name or tag
+                    change recently:
+                  </h2>
+                  {mayNotExist.map((summoner, index) => (
+                    <p className="text-red-500" key={index}>
+                      {summoner}
+                    </p>
+                  ))}
+                </>
+              )}
+            </div>
           </div>
         )}
       </div>
+      {/* OUR FORM TO ADD SUMMONERS WE'D LIKE TO FOLLOW */}
       {/* form should be visible whether or not user is following anyone */}
       {showAddSummoner && (
         <FollowingModal onClose={onClose} onAddSummoner={handleAddSummoner} />
