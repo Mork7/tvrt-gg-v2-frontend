@@ -58,7 +58,8 @@ const Profile = () => {
             summoner.summonerName,
             summoner.tag,
             summoner.region
-          );
+          )
+          // JSON parse returns an array of objects, we only need the first object
           setSummoner(data[0]);
         } catch (error) {
           toast.error(`Error fetching player rank: ${error.message}`);
