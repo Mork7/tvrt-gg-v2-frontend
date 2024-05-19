@@ -33,6 +33,7 @@ const Register = () => {
           name: username,
           email: email,
           password: password,
+          summonerDetails: { summonerName, tag, region },
         })
         .then((res) => {
           toast.success('User registered successfully');
@@ -98,8 +99,8 @@ const Register = () => {
           />
           <label htmlFor="confirmPassword">Tag</label>
           <input
-            type="password"
-            id="confirmPassword"
+            type="text"
+            id="tag"
             className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
             onChange={(e) => setTag(e.target.value)}
           />
