@@ -174,10 +174,10 @@ const Profile = () => {
           ))}
       </div>
       {/* Image Section */}
-      <div className="h-[51.5rem] w-[80rem] ml-12 rounded-lg flex justify-center p-4">
+      <div className="h-[51.5rem] w-[80rem] ml-12 border rounded-lg flex justify-center p-4">
         <img
           src="https://images.alphacoders.com/681/681587.png"
-          alt="Teemo"
+          alt="Zed"
           className="rounded-lg w-full"
         />
       </div>
