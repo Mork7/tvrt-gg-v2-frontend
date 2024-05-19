@@ -4,6 +4,9 @@ import { useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 import { toast } from 'react-toastify';
 import { Button } from 'flowbite-react';
+import SummonerDetails from '../../components/SummonerDetails';
+import { getPlayerRank } from '../../utils/leagueApi';
+import { Spinner } from 'flowbite-react';
 
 const Profile = () => {
   const { isLoggedIn } = useContext(AuthContext);
@@ -13,6 +16,12 @@ const Profile = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [summoner, setSummoner] = useState(
+    localStorage.getItem('summonerDetails')
+      ? JSON.parse(localStorage.getItem('summonerDetails'))
+      : null
+  );
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const getUserProfile = async () => {
@@ -33,6 +42,33 @@ const Profile = () => {
     };
     getUserProfile();
   }, [isLoggedIn]);
+
+  useEffect(() => {
+    if (userProfile?.summonerDetails) {
+      setSummoner(userProfile.summonerDetails);
+    }
+  }, [userProfile]);
+
+  useEffect(() => {
+    const fetchPlayerRank = async () => {
+      if (summoner.summonerName && summoner.tag && summoner.region) {
+        setIsLoading(true);
+        try {
+          const data = await getPlayerRank(
+            summoner.summonerName,
+            summoner.tag,
+            summoner.region
+          );
+          setSummoner(data[0]);
+        } catch (error) {
+          toast.error(`Error fetching player rank: ${error.message}`);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+    fetchPlayerRank();
+  }, [summoner]);
 
   const onSubmitHandler = (e) => {
     // gotta hook up our backend here
@@ -76,7 +112,7 @@ const Profile = () => {
         {/* Update Button */}
         <div className="flex items-center space-x-3">
           <h1 className="font-semibold text-3xl mb-3">User Profile</h1>
-          <Button className='mb-2' onClick={() => setEditMode(!editMode)}>
+          <Button className="mb-2" onClick={() => setEditMode(!editMode)}>
             Update User Info
           </Button>
         </div>
@@ -174,12 +210,20 @@ const Profile = () => {
           ))}
       </div>
       {/* Image Section */}
-      <div className="h-[51.5rem] w-[80rem] ml-12 border rounded-lg flex justify-center p-4">
-        <img
-          src="https://images.alphacoders.com/681/681587.png"
-          alt="Zed"
-          className="rounded-lg w-full"
-        />
+      <div className="h-[51.5rem] w-[80rem] ml-12 rounded-lg border flex justify-center p-4">
+        {/* Summoner Profile Tile*/}
+        {isLoading ? (
+          <div className="self-center">
+            <Spinner aria-label="Extra large spinner example" size="xl" />
+          </div>
+        ) : summoner ? (
+          <SummonerDetails summoner={summoner} />
+        ) : (
+          <img
+            src="https://images7.alphacoders.com/536/536426.png"
+            alt="Yasuo"
+          />
+        )}
       </div>
     </section>
   );

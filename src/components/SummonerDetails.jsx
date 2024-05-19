@@ -5,8 +5,6 @@ import { getAllLeagueRanks } from '../utils/leagueApi';
 import selectRankImage from '../utils/selectRankImage';
 
 const SummonerDetails = ({ summoner }) => {
-
-
   function capitalizeRank(rankStr) {
     // Ranks are formatted as "S2024 S1 platinum 1"
     // Split the string into parts by space
@@ -78,11 +76,16 @@ const SummonerDetails = ({ summoner }) => {
         </h2>
         <img src={rankImage} alt="Rank Image" className="w-[15rem]" />
         <p className="font-semibold">{rank}</p>
-        <p>
-          Wins - <span className="text-green-600">{wins}</span> | Losses -
-          <span className="text-red-600">{losses}</span>
-        </p>
-        <p>Win Percentage - {winPercentage}</p>
+        {!winLossRatio === 'No Ranked Games' ? (
+          <p>
+            Wins - <span className="text-green-600">{wins}</span> | Losses -
+            <span className="text-red-600">{losses}</span>
+          </p>
+        ) : (
+          <p className="text-red-600">{winLossRatio}</p>
+        )}
+
+        <p>Win Percentage - {!isNaN(winPercentage) ? winPercentage : '0%'}</p>
         <p>{lp} LP</p>
         <div className="self-center mt-6">
           <h2 className="font-semibold text-3xl text-center">Most Played</h2>

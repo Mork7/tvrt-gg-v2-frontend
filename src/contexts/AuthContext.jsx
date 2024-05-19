@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect } from 'react';
+import SummonerDetails from '../components/SummonerDetails';
 
 export const AuthContext = createContext({
   isLoggedIn: false,
@@ -16,6 +17,7 @@ export const AuthProvider = ({ children }) => {
 
     const login = (data) => {
         localStorage.setItem('userInfo', JSON.stringify(data));
+        localStorage.setItem('summonerDetails', JSON.stringify(data.summonerDetails));
         setIsLoggedIn(true);
     };
 

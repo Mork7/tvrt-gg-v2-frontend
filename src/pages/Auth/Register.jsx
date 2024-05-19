@@ -89,20 +89,22 @@ const Register = () => {
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />
-          <p>Optional: Add Own Summoner Stats</p>
-          <label htmlFor="confirmPassword">Summoner Name</label>
+          <h2 className='font-semibold  text-2xl'>Add Your Summoner Info</h2>
+          <label htmlFor="summonerName">Summoner Name</label>
           <input
             type="text"
             id="summonerName"
             className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
             onChange={(e) => setSummonerName(e.target.value)}
+            required
           />
-          <label htmlFor="confirmPassword">Tag</label>
+          <label htmlFor="tag">Tag</label>
           <input
             type="text"
             id="tag"
             className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
             onChange={(e) => setTag(e.target.value)}
+            required
           />
           <div className="flex justify-between space-x-4">
             <div>
@@ -286,7 +288,7 @@ const Register = () => {
           </div>
         </form>
       </div>
-      <div className="h-[51.5rem] w-[80rem] ml-12 rounded-lg flex justify-center p-4">
+      <div className="h-[51.5rem] w-[80rem] ml-12 rounded-lg flex justify-center p-4 border">
         <img
           src="https://images.unsplash.com/photo-1633545491399-54a16aa6a871?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
           alt="War Room"
