@@ -8,6 +8,7 @@ import selectRankImage from '../../utils/selectRankImage';
 import axios from 'axios';
 
 const Following = () => {
+  // Declarations
   const { isLoggedIn } = useContext(AuthContext);
   const [followingStats, setFollowingStats] = useState(
     JSON.parse(localStorage.getItem('followingStats')) || []
@@ -18,8 +19,15 @@ const Following = () => {
   const [mayNotExist, setMayNotExist] = useState([]);
 
   useEffect(() => {
+    /**
+     * Fetch the stats of the summoners that the current user is following.
+     * Updates the following stats in localStorage and state upon successful fetch.
+     * Notifies the user of the result via toast notifications.
+     * @returns {Promise<void>}
+     */
     const fetchFollowingStats = async () => {
       try {
+        // Get the following list from the user's information
         const { following } = userInfo;
 
         // Fetch player stats for each user in the following list
@@ -29,6 +37,7 @@ const Following = () => {
 
         // await for all the player stats to be fetched
         const stats = await Promise.allSettled(statsPromises);
+
         // Collect the names of the summoners that don't exist
         const rejectedSummoners = stats
           .filter((result) => result.status === 'rejected')
@@ -38,8 +47,10 @@ const Following = () => {
               ' #' +
               result.reason.params.name.split('-')[1].toUpperCase()
           );
+        // Update the state with the summoners that may not exist
         setMayNotExist(rejectedSummoners);
 
+        // Notify the user of the summoners that may not exist
         if (rejectedSummoners.length > 0) {
           toast.error(
             `The following summoners may not exist: ${rejectedSummoners.join(
@@ -47,12 +58,12 @@ const Following = () => {
             )}`
           );
         }
-        // filter out the fulfilled promises so we don't have to deal with the rejected ones
-        const fullfilledStats = stats
+        // filter out the fulfilled promises
+        const fulfilledSummoners = stats
           .filter((result) => result.status === 'fulfilled')
           .map((result) => result.value);
         // flatten the array of arrays to get the objects
-        const flattenedStats = fullfilledStats.flat();
+        const flattenedStats = fulfilledSummoners.flat();
         // update the state with the fetched stats
         setFollowingStats(flattenedStats);
         // update the local storage with the fetched stats
@@ -60,6 +71,7 @@ const Following = () => {
         // notify the user that the stats have been fetched
         toast.success('Fetched summoners stats successfully');
       } catch (error) {
+        // notify the user that there was an error fetching the stats
         console.error(`Error fetching following stats: ${error.message}`);
         toast.error('Error fetching stats');
       } finally {
@@ -75,11 +87,23 @@ const Following = () => {
     }
   }, [isLoggedIn, followingStats.length, userInfo]);
 
+  /**
+   * Close the modal for adding a new summoner.
+   */
   const onClose = () => {
     setShowAddSummoner(false);
   };
 
-  // if a summoner is added to the following list from the modal
+  /**
+   * Add a new summoner to the user's following list in the database and localStorage.
+   * Updates the following stats and user information in localStorage upon successful addition.
+   * Notifies the user of the result via toast notifications.
+   * @param {Object} newSummoner
+   * @param {String} newSummoner.summonerName - The summoner's name.
+   * @param {String} newSummoner.tag - The summoner's tag.'
+   * @param {String} newSummoner.region - The summoner's region.
+   * @returns {Promise<void>} - A promise that resolves when the summoner has been added.
+   */
   const handleAddSummoner = async (newSummoner) => {
     try {
       // Fetch the new summoner's stats
@@ -90,20 +114,22 @@ const Following = () => {
       );
 
       // Ensure the stats are properly formatted
-      const updatedStats = [...followingStats, ...newStats];
+      if (newStats) {
+        var updatedStats = [...followingStats, ...newStats];
 
-      // Update the local storage with the new summoner's stats
-      localStorage.setItem('followingStats', JSON.stringify(updatedStats));
-      // Update the followingStats array with the new summoner's stats, this will cause a re-render and the stats will be pulled from local storage
-      setFollowingStats(updatedStats);
+        // Update the local storage with the new summoner's stats
+        localStorage.setItem('followingStats', JSON.stringify(updatedStats));
+        // Update the followingStats array with the new summoner's stats, this will cause a re-render and the stats will be pulled from local storage
+        setFollowingStats(updatedStats);
 
-      const updatedUserInfo = {
-        ...userInfo,
-        following: [...userInfo.following, newSummoner],
-      };
-      localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
-      // Notify the user that the new summoner's stats have been fetched
-      toast.success('Add new summoner successfully');
+        const updatedUserInfo = {
+          ...userInfo,
+          following: [...userInfo.following, newSummoner],
+        };
+        localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
+        // Notify the user that the new summoner's stats have been fetched
+        toast.success('Add new summoner successfully');
+      }
     } catch (error) {
       setMayNotExist([
         ...mayNotExist,
@@ -114,50 +140,69 @@ const Following = () => {
           newSummoner.region.toUpperCase(),
       ]);
       console.error(`Error fetching new summoner stats: ${error.message}`);
-      toast.error(`Error fetching new summoner stats: ${error.message}`);
+      toast.error('Error fetching new summoner stats');
     }
   };
 
+  /**
+   * Remove a summoner from the user's following list in the database and localStorage.
+   * Displays a confirmation dialog to the user before proceeding with the removal.
+   * Updates the following stats and user information in localStorage upon successful removal.
+   * Notifies the user of the result via toast notifications.
+   * @param {Object} summoner
+   * @param {String} summoner.username - The username of the summoner to be removed, in the format "summonerName-tag".
+   * @returns {Promise<void>}
+   */
   const handleRemoveSummoner = async (summoner) => {
     // Remove the summoner from the following list
     // Update the local storage with the new following list
     // Update the followingStats array with the new following list
     // Notify the user that the summoner has been removed
-    alert('Are you sure you want to remove this summoner?');
     if (summoner) {
+      // Confirm the user wants to remove the summoner
+      const deletionConfirmed = window.confirm(
+        'Are you sure you want to remove this summoner?'
+      );
+      // If the user confirms the deletion then proceed
+      if (!deletionConfirmed) {
+        return;
+      }
+
+      // Get the summoner's name and tag
       try {
         const summonerName = summoner.username.split('-')[0];
         const tag = summoner.username.split('-')[1];
-        console.log(summonerName);
-        console.log(tag);
 
+        // Remove the summoner from the following list in the DB
         await axios.delete(
           `${import.meta.env.VITE_BACKEND_BASE_URI}/users/following`,
           { data: { summonerName, tag }, withCredentials: true }
         );
 
-        // get new array for the new following stats
+        // Update the local storage with the new following list
         const updatedStats = followingStats.filter(
-          (user) => user.username.split('-')[0] !== summonerName && user.username.split('-')[1] !== tag
+          (user) => user.username.split('-')[0] !== summonerName
         );
-        console.log(updatedStats);
 
+        // Update the followingStats array with the new following list
         const updatedFollowingArray = await axios.get(
           `${import.meta.env.VITE_BACKEND_BASE_URI}/users/following`,
           { withCredentials: true }
         );
 
+        // Update the local storage with the new following list
         localStorage.setItem('followingStats', JSON.stringify(updatedStats));
         setFollowingStats(updatedStats);
-
         const updatedUserInfo = {
           ...userInfo,
           following: updatedFollowingArray.data,
         };
         localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
 
+        // Notify the user that the summoner has been removed
         toast.success('Summoner removed successfully');
       } catch (error) {
+        // Notify the user that there was an error removing the summoner
         toast.error(`Error removing summoner`);
       }
     }
