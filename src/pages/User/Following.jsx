@@ -113,13 +113,12 @@ const Following = () => {
         newSummoner.region
       );
 
-      // Ensure the stats are properly formatted
       if (newStats) {
-        var updatedStats = [...followingStats, ...newStats];
+        const updatedStats = [...followingStats, ...newStats];
 
         // Update the local storage with the new summoner's stats
         localStorage.setItem('followingStats', JSON.stringify(updatedStats));
-        // Update the followingStats array with the new summoner's stats, this will cause a re-render and the stats will be pulled from local storage
+        // Update the followingStats array with the new summoner's stats, causing a re-render and pulling stats from local storage
         setFollowingStats(updatedStats);
 
         const updatedUserInfo = {
@@ -127,20 +126,42 @@ const Following = () => {
           following: [...userInfo.following, newSummoner],
         };
         localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
+
         // Notify the user that the new summoner's stats have been fetched
-        toast.success('Add new summoner successfully');
+        toast.success('Added new summoner successfully');
       }
     } catch (error) {
-      setMayNotExist([
-        ...mayNotExist,
-        newSummoner.summonerName +
-          ' #' +
-          newSummoner.tag.toUpperCase() +
-          ' - ' +
-          newSummoner.region.toUpperCase(),
-      ]);
-      console.error(`Error fetching new summoner stats: ${error.message}`);
-      toast.error('Error fetching new summoner stats');
+      if (error.message === "Summoner doesn't exist") {
+        const { name } = error.params;
+        const summonerName = name?.split('-')[0];
+        const tag = name?.split('-')[1];
+        console.log(summonerName + ' #' + tag);
+
+        // Remove the summoner if no stats were found
+        await axios.delete(
+          `${import.meta.env.VITE_BACKEND_BASE_URI}/users/following`,
+          { data: { summonerName, tag }, withCredentials: true }
+        );
+
+        // Notify the user about the summoner not existing
+        setMayNotExist([
+          ...mayNotExist,
+          `${
+            newSummoner.summonerName
+          } #${newSummoner.tag.toUpperCase()} - ${newSummoner.region.toUpperCase()}`,
+        ]);
+        toast.error('Summoner does not exist');
+      } else {
+        // Handle other errors
+        setMayNotExist([
+          ...mayNotExist,
+          `${
+            newSummoner.summonerName
+          } #${newSummoner.tag.toUpperCase()} - ${newSummoner.region.toUpperCase()}`,
+        ]);
+        console.error(`Error fetching new summoner stats: ${error.message}`);
+        toast.error('Error fetching new summoner stats');
+      }
     }
   };
 

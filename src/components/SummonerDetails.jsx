@@ -85,7 +85,7 @@ const SummonerDetails = ({ summoner }) => {
           <p className="text-red-600">{winLossRatio}</p>
         )}
 
-        <p>Win Percentage - {!isNaN(winPercentage) ? winPercentage : '0%'}</p>
+        <p>Win Percentage - {winPercentage.includes('NaN')  ? '0%' : winPercentage}</p>
         <p>{lp} LP</p>
         <div className="self-center mt-6">
           <h2 className="font-semibold text-3xl text-center">Most Played</h2>
