@@ -80,7 +80,11 @@ const Following = () => {
     };
 
     // if the following stats array is empty that means there is nothing local storage so we fetch
-    if (isLoggedIn && followingStats.length === 0) {
+    if (
+      isLoggedIn &&
+      followingStats.length === 0 &&
+      userInfo.following.length > 0
+    ) {
       fetchFollowingStats();
     } else {
       setIsLoading(false);
