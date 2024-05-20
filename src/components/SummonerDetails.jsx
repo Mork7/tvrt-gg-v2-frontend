@@ -85,7 +85,10 @@ const SummonerDetails = ({ summoner }) => {
           <p className="text-red-600">{winLossRatio}</p>
         )}
 
-        <p>Win Percentage - {winPercentage?.includes('NaN')  ? '0%' : winPercentage}</p>
+        <p>
+          Win Percentage -{' '}
+          {winPercentage?.includes('NaN') ? '0%' : winPercentage}
+        </p>
         <p>{lp} LP</p>
         <div className="self-center mt-6">
           <h2 className="font-semibold text-3xl text-center">Most Played</h2>
@@ -109,7 +112,10 @@ const SummonerDetails = ({ summoner }) => {
         <div className="grid grid-cols-3 text-center space-x-2 space-y-2">
           {allLeagueRanks?.map((rank, index) => (
             <div key={index}>
-              <img src={`./${rank.name.toLowerCase()}.webp`} alt="rank" />
+              <img
+                src={`./rank-icons/${rank.name.toLowerCase()}.webp`}
+                alt="rank"
+              />
               <p>{rank.name}</p>
               <p>{rank.playerBase}</p>
             </div>
