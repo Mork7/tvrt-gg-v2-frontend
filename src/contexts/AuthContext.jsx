@@ -1,5 +1,4 @@
 import { createContext, useState, useEffect } from 'react';
-import SummonerDetails from '../components/SummonerDetails';
 
 export const AuthContext = createContext({
   isLoggedIn: false,

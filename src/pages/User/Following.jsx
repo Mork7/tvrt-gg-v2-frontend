@@ -5,6 +5,7 @@ import { Spinner, Button } from 'flowbite-react';
 import { toast } from 'react-toastify';
 import FollowingModal from '../../components/FollowingModal';
 import selectRankImage from '../../utils/selectRankImage';
+import axios from 'axios';
 
 const Following = () => {
   const { isLoggedIn } = useContext(AuthContext);
@@ -37,7 +38,6 @@ const Following = () => {
               ' #' +
               result.reason.params.name.split('-')[1].toUpperCase()
           );
-
         setMayNotExist(rejectedSummoners);
 
         if (rejectedSummoners.length > 0) {
@@ -96,6 +96,12 @@ const Following = () => {
       localStorage.setItem('followingStats', JSON.stringify(updatedStats));
       // Update the followingStats array with the new summoner's stats, this will cause a re-render and the stats will be pulled from local storage
       setFollowingStats(updatedStats);
+
+      const updatedUserInfo = {
+        ...userInfo,
+        following: [...userInfo.following, newSummoner],
+      };
+      localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
       // Notify the user that the new summoner's stats have been fetched
       toast.success('Add new summoner successfully');
     } catch (error) {
@@ -109,6 +115,51 @@ const Following = () => {
       ]);
       console.error(`Error fetching new summoner stats: ${error.message}`);
       toast.error(`Error fetching new summoner stats: ${error.message}`);
+    }
+  };
+
+  const handleRemoveSummoner = async (summoner) => {
+    // Remove the summoner from the following list
+    // Update the local storage with the new following list
+    // Update the followingStats array with the new following list
+    // Notify the user that the summoner has been removed
+    alert('Are you sure you want to remove this summoner?');
+    if (summoner) {
+      try {
+        const summonerName = summoner.username.split('-')[0];
+        const tag = summoner.username.split('-')[1];
+        console.log(summonerName);
+        console.log(tag);
+
+        await axios.delete(
+          `${import.meta.env.VITE_BACKEND_BASE_URI}/users/following`,
+          { data: { summonerName, tag }, withCredentials: true }
+        );
+
+        // get new array for the new following stats
+        const updatedStats = followingStats.filter(
+          (user) => user.username.split('-')[0] !== summonerName && user.username.split('-')[1] !== tag
+        );
+        console.log(updatedStats);
+
+        const updatedFollowingArray = await axios.get(
+          `${import.meta.env.VITE_BACKEND_BASE_URI}/users/following`,
+          { withCredentials: true }
+        );
+
+        localStorage.setItem('followingStats', JSON.stringify(updatedStats));
+        setFollowingStats(updatedStats);
+
+        const updatedUserInfo = {
+          ...userInfo,
+          following: updatedFollowingArray.data,
+        };
+        localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
+
+        toast.success('Summoner removed successfully');
+      } catch (error) {
+        toast.error(`Error removing summoner`);
+      }
     }
   };
 
@@ -144,7 +195,11 @@ const Following = () => {
                     Summoner Name{' '}
                     <Button
                       onClick={() => setShowAddSummoner(!showAddSummoner)}
-                      style={{ color: 'white', width: '3rem', height: '2rem' }}
+                      style={{
+                        color: 'white',
+                        width: '3rem',
+                        height: '2rem',
+                      }}
                       className="flex justify-center items-center"
                     >
                       <span className="text-5xl">+</span>
@@ -159,10 +214,24 @@ const Following = () => {
                 {followingStats?.map((user, index) => (
                   <tr key={index}>
                     <td className="border p-3">
-                      {user?.username?.split('-')[0] +
-                        ' #' +
-                        user?.username?.split('-')[1].toUpperCase()}
+                      <div className="flex justify-between">
+                        {user?.username?.split('-')[0] +
+                          ' #' +
+                          user?.username?.split('-')[1].toUpperCase()}
+                        <Button
+                          style={{
+                            color: 'white',
+                            width: '3rem',
+                            height: '2rem',
+                          }}
+                          className="flex justify-center items-center bg-red-600 ml-2"
+                          onClick={() => handleRemoveSummoner(user)}
+                        >
+                          <span className="text-5xl mb-3">-</span>
+                        </Button>
+                      </div>
                     </td>
+
                     <td className="border p-3 flex ">
                       <img
                         src={`${selectRankImage(user?.rank)}`}
