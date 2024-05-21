@@ -11,18 +11,22 @@ import { Spinner } from 'flowbite-react';
 const Profile = () => {
   const { isLoggedIn } = useContext(AuthContext);
   const [userProfile, setUserProfile] = useState(null);
-  const [editMode, setEditMode] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [summoner, setSummoner] = useState(
+  const [summonerDetails, setSummonerDetails] = useState(
     localStorage.getItem('summonerDetails')
       ? JSON.parse(localStorage.getItem('summonerDetails'))
       : null
   );
   const [isLoading, setIsLoading] = useState(false);
+  const [summonerName, setSummonerName] = useState('');
+  const [tag, setTag] = useState('');
+  const [region, setRegion] = useState('');
 
+  // Fetch user profile
   useEffect(() => {
     const getUserProfile = async () => {
       if (isLoggedIn) {
@@ -43,68 +47,99 @@ const Profile = () => {
     getUserProfile();
   }, [isLoggedIn]);
 
+  // Set summoner details
   useEffect(() => {
     if (userProfile?.summonerDetails) {
-      setSummoner(userProfile.summonerDetails);
+      setSummonerDetails(userProfile.summonerDetails);
     }
   }, [userProfile]);
 
+  // Fetch player rank from summoner details
   useEffect(() => {
     const fetchPlayerRank = async () => {
-      if (summoner.summonerName && summoner.tag && summoner.region) {
+      if (
+        summonerDetails.summonerName &&
+        summonerDetails.tag &&
+        summonerDetails.region
+      ) {
         setIsLoading(true);
         try {
           const data = await getPlayerRank(
-            summoner.summonerName,
-            summoner.tag,
-            summoner.region
-          )
+            summonerDetails.summonerName,
+            summonerDetails.tag,
+            summonerDetails.region
+          );
           // JSON parse returns an array of objects, we only need the first object
-          setSummoner(data[0]);
+          setSummonerDetails(data[0]);
         } catch (error) {
-          toast.error(`Error fetching player rank: ${error.message}`);
+          toast.error(`Error fetching player rank, please check summoner details`);
         } finally {
           setIsLoading(false);
         }
       }
     };
     fetchPlayerRank();
-  }, [summoner]);
+  }, [summonerDetails]);
 
+  // update user profile
   const onSubmitHandler = (e) => {
-    // gotta hook up our backend here
     e.preventDefault();
-
+    // Email regex pattern
     const regexPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
+    // Check if email is valid
     if (!regexPattern.test(email)) {
       toast.error('Invalid email');
       return;
     }
 
-    if (password === confirmPassword) {
-      axios
-        .put(
-          `${import.meta.env.VITE_BACKEND_BASE_URI}/users/profile`,
-          {
-            name: username,
-            email: email,
-            password: password,
-          },
-          { withCredentials: true }
-        )
-        .then((res) => {
-          toast.success('Updated successfully');
-          console.log(res);
-        })
-        .catch((err) => {
-          toast.error(err.response?.data?.message || 'Error updating user');
-          console.error(err);
-        });
-    } else {
+    // Check if password and confirm password match
+    if ((password && confirmPassword) && (password !== confirmPassword)) {
       toast.error('Passwords do not match');
+      return;
     }
+
+    // Update user data
+    const updateData = {
+      name: username || userProfile.name,
+      email: email || userProfile.email,
+      summonerDetails:
+        summonerName || tag || region
+          ? { summonerName, tag, region }
+          : userProfile.summonerDetails,
+    };
+
+    // If password is provided, add password to update data
+    if (password) {
+      updateData.password = password;
+    }
+
+    axios
+      .put(
+        `${import.meta.env.VITE_BACKEND_BASE_URI}/users/profile`,
+        updateData,
+        { withCredentials: true }
+      )
+      .then(() => {
+        setSummonerDetails(updateData.summonerDetails);
+        localStorage.setItem('summonerDetails', JSON.stringify(updateData.summonerDetails));
+        toast.success('Updated successfully');
+      })
+      .catch((err) => {
+        toast.error(err.response?.data?.message || 'Error updating user');
+        console.error(err);
+      });
   };
+
+  const handleReset = () => {
+    setUsername('');
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
+    setSummonerName('');
+    setTag('');
+    setRegion('');
+  }
 
   return (
     <section className="flex justify-between">
@@ -113,13 +148,13 @@ const Profile = () => {
         {/* Update Button */}
         <div className="flex items-center space-x-3">
           <h1 className="font-semibold text-3xl mb-3">User Profile</h1>
-          <Button className="mb-2" onClick={() => setEditMode(!editMode)}>
+          <Button className="mb-2" onClick={() => setIsEditMode(!isEditMode)}>
             Update User Info
           </Button>
         </div>
 
         {userProfile &&
-          (editMode ? (
+          (isEditMode ? (
             <form
               onSubmit={onSubmitHandler}
               className="flex flex-col space-y-3 w-[30rem]"
@@ -130,7 +165,6 @@ const Profile = () => {
                 id="username"
                 className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
                 onChange={(e) => setUsername(e.target.value)}
-                required
               />
               <label htmlFor="email">Email</label>
               <input
@@ -138,7 +172,6 @@ const Profile = () => {
                 id="email"
                 className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
                 onChange={(e) => setEmail(e.target.value)}
-                required
               />
               <label htmlFor="username">Password</label>
               <input
@@ -146,7 +179,6 @@ const Profile = () => {
                 id="password"
                 className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
                 onChange={(e) => setPassword(e.target.value)}
-                required
               />
               <label htmlFor="confirmPassword">Re-enter Password</label>
               <input
@@ -154,13 +186,193 @@ const Profile = () => {
                 id="confirmPassword"
                 className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                required
               />
               <div className="flex justify-between">
-                <Button color="failure" type="reset">
+                <Button color="failure" type="reset" onClick={handleReset}>
                   Reset
                 </Button>
                 <Button type="submit">Submit</Button>
+              </div>
+              <h2 className="font-semibold  text-2xl">
+                Edit Your Summoner Info
+              </h2>
+              <label htmlFor="summonerName">Summoner Name</label>
+              <input
+                type="text"
+                id="summonerName"
+                className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
+                onChange={(e) => setSummonerName(e.target.value)}
+              />
+              <label htmlFor="tag">Tag</label>
+              <input
+                type="text"
+                id="tag"
+                className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
+                onChange={(e) => setTag(e.target.value)}
+                maxLength={4}
+              />
+              {/* Region selection */}
+              <div className="flex justify-between space-x-4">
+                <div>
+                  <div>
+                    <label htmlFor="na" className="mr-3">
+                      North America
+                    </label>
+                    <input
+                      name="region"
+                      type="radio"
+                      id="na"
+                      className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
+                      value={'na'}
+                      onChange={(e) => setRegion(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="euw" className="mr-3">
+                      Europe West
+                    </label>
+                    <input
+                      name="region"
+                      type="radio"
+                      id="euw"
+                      className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
+                      value={'euw'}
+                      onChange={(e) => setRegion(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="eune" className="mr-3">
+                      Europe East/Nordic
+                    </label>
+                    <input
+                      name="region"
+                      type="radio"
+                      id="eune"
+                      className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
+                      value={'eune'}
+                      onChange={(e) => setRegion(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="oce" className="mr-3">
+                      Oceania
+                    </label>
+                    <input
+                      name="region"
+                      type="radio"
+                      id="oce"
+                      className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
+                      value={'oce'}
+                      onChange={(e) => setRegion(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="ru" className="mr-3">
+                      Russia
+                    </label>
+                    <input
+                      name="region"
+                      type="radio"
+                      id="ru"
+                      className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
+                      value={'ru'}
+                      onChange={(e) => setRegion(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="kr" className="mr-3">
+                      Korea
+                    </label>
+                    <input
+                      name="region"
+                      type="radio"
+                      id="kr"
+                      className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
+                      value={'kr'}
+                      onChange={(e) => setRegion(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <div>
+                    <label htmlFor="jp" className="mr-3">
+                      Japan
+                    </label>
+                    <input
+                      name="region"
+                      type="radio"
+                      id="jp"
+                      className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
+                      value={'jp'}
+                      onChange={(e) => setRegion(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="br" className="mr-3">
+                      Brazil
+                    </label>
+                    <input
+                      name="region"
+                      type="radio"
+                      id="br"
+                      className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
+                      value={'br'}
+                      onChange={(e) => setRegion(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="lan" className="mr-3">
+                      Latin America North
+                    </label>
+                    <input
+                      name="region"
+                      type="radio"
+                      id="lan"
+                      className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
+                      value={'lan'}
+                      onChange={(e) => setRegion(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="vn" className="mr-3">
+                      Vietnam
+                    </label>
+                    <input
+                      name="region"
+                      type="radio"
+                      id="vn"
+                      className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
+                      value={'vn'}
+                      onChange={(e) => setRegion(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="th" className="mr-3">
+                      Thailand
+                    </label>
+                    <input
+                      name="region"
+                      type="radio"
+                      id="th"
+                      className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
+                      value={'th'}
+                      onChange={(e) => setRegion(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="tw" className="mr-3">
+                      Taiwan
+                    </label>
+                    <input
+                      name="region"
+                      type="radio"
+                      id="tw"
+                      className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
+                      value={'tw'}
+                      onChange={(e) => setRegion(e.target.value)}
+                    />
+                  </div>
+                </div>
               </div>
             </form>
           ) : (
@@ -217,8 +429,8 @@ const Profile = () => {
           <div className="self-center">
             <Spinner aria-label="Extra large spinner example" size="xl" />
           </div>
-        ) : summoner ? (
-          <SummonerDetails summoner={summoner} />
+        ) : summonerDetails ? (
+          <SummonerDetails summoner={summonerDetails} />
         ) : (
           <img
             src="https://images7.alphacoders.com/536/536426.png"

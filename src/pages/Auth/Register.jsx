@@ -105,6 +105,7 @@ const Register = () => {
             className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
             onChange={(e) => setTag(e.target.value)}
             required
+            maxLength={4}
           />
           <div className="flex justify-between space-x-4">
             <div>
