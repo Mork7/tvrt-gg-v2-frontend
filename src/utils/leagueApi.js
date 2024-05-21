@@ -60,7 +60,7 @@ export const getTwitchStreams = async (retries = 0) => {
     try {
         const response = await api.get('/api/getListOfStreams', {
             params: {
-                numOfClips: '6',
+                numOfClips: '12',
             },
         });
         return response.data;

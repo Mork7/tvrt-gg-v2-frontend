@@ -18,6 +18,7 @@ import Login from './pages/Auth/Login.jsx';
 import Search from './pages/User/Search.jsx';
 import Following from './pages/User/Following.jsx';
 import Profile from './pages/User/Profile.jsx';
+import Streams from './pages/User/Streams.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -26,6 +27,7 @@ const router = createBrowserRouter(
       <Route path="/login" element={<Login />} />
       <Route path="/following" element={<Following />} />
       <Route path="/profile" element={<Profile />} />
+      <Route path="/streams" element={<Streams />} />
       <Route path="/" element={<Search />} />
     </Route>
   )

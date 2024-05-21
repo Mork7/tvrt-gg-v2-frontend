@@ -5,6 +5,9 @@ import { AuthContext } from '../../contexts/AuthContext';
 import { useContext } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { FaSearch } from 'react-icons/fa';
+import { SlUserFollowing } from 'react-icons/sl';
+import { MdPersonalVideo } from 'react-icons/md';
 
 const Navigation = () => {
   const navigate = useNavigate();
@@ -59,22 +62,29 @@ const Navigation = () => {
 
       {/* Nav buttons */}
       <Navbar.Collapse>
-        <Navbar.Link href="/" active={isActive('/')} className="text-xl">
+        <Navbar.Link
+          href="/"
+          active={isActive('/')}
+          className="text-xl flex justify-center items-center"
+        >
           Search
+          <FaSearch className="ml-2" />
         </Navbar.Link>
         <Navbar.Link
           href="/following"
           active={isActive('/following')}
-          className="text-xl"
+          className="text-xl flex justify-center items-center"
         >
           Following
+          <SlUserFollowing className="ml-2" />
         </Navbar.Link>
         <Navbar.Link
-          href="/friends"
-          active={isActive('/friends')}
-          className="text-xl"
+          href="/streams"
+          active={isActive('/streams')}
+          className="text-xl flex justify-between items-center"
         >
-          Friends
+          Streams
+          <MdPersonalVideo className='ml-2' />
         </Navbar.Link>
       </Navbar.Collapse>
 
@@ -88,7 +98,7 @@ const Navigation = () => {
         </Button>
       ) : (
         <div className="flex md:order-2">
-          <p className='self-center mr-3'>{userInfo?.name}</p>
+          <p className="self-center mr-3">{userInfo?.name}</p>
           <Dropdown
             arrowIcon={false}
             inline
