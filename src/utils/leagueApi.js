@@ -42,20 +42,6 @@ export const getPlayerRank = async (
     }
 };
 
-// export const getChampion = async (championName) => {
-//   try {
-//     const response = await api.get("/api/selectChamp", {
-//       params: {
-//         name: championName,
-//       },
-//     });
-//     return response.data;
-//   } catch (error) {
-//     console.error("Error fetching champion:", error);
-//     throw error;
-//   }
-// };
-
 export const getTwitchStreams = async (retries = 0) => {
     try {
         const response = await api.get('/api/getListOfStreams', {

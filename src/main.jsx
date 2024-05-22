@@ -20,15 +20,21 @@ import Following from './pages/User/Following.jsx';
 import Profile from './pages/User/Profile.jsx';
 import Streams from './pages/User/Streams.jsx';
 
+// Admin Pages
+import Dashboard from './pages/Admin/Dashboard.jsx';
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
-      <Route path="/register" element={<Register />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/following" element={<Following />} />
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/streams" element={<Streams />} />
-      <Route path="/" element={<Search />} />
+      <Route index element={<Search />} />
+      <Route path="register" element={<Register />} />
+      <Route path="login" element={<Login />} />
+      <Route path="following" element={<Following />} />
+      <Route path="profile" element={<Profile />} />
+      <Route path="streams" element={<Streams />} />
+      <Route path="admin">
+        <Route path="dashboard" element={<Dashboard />} />
+      </Route>
     </Route>
   )
 );

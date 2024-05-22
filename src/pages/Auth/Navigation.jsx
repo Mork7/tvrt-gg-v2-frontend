@@ -14,7 +14,7 @@ const Navigation = () => {
   const location = useLocation();
   const isActive = (path) => location.pathname === path;
 
-  const { isLoggedIn, logout, userInfo } = useContext(AuthContext);
+  const { isLoggedIn, logout, userInfo, isAdmin } = useContext(AuthContext);
 
   const logoutHandler = () => {
     if (isLoggedIn && userInfo) {
@@ -49,7 +49,7 @@ const Navigation = () => {
   };
 
   const clickDashboardHandler = () => {
-    isLoggedIn && userInfo.isAdmin
+    isLoggedIn && isAdmin
       ? navigate('/admin/dashboard')
       : navigate('/login');
   };
@@ -114,7 +114,7 @@ const Navigation = () => {
               </span>
             </Dropdown.Header>
             {/* TODO If isAdmin, they have a dashboard */}
-            {userInfo?.isAdmin && (
+            {isAdmin && (
               <Dropdown.Item
                 onClick={clickDashboardHandler}
                 className=" text-black text-lg"

@@ -33,7 +33,6 @@ const Login = () => {
         }
       )
       .then((response) => {
-        console.log(response.data);
         login(response.data);
         toast.success('Logged in successfully');
         navigate('/');
