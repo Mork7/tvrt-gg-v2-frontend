@@ -7,7 +7,7 @@ router
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Button } from 'flowbite-react';
-import UpdateUserModal from '../../components/Admin/UpdateUserModal';
+import UpdateUserModal from '../../components/UpdateUserModal';
 import { toast } from 'react-toastify';
 
 const Dashboard = () => {

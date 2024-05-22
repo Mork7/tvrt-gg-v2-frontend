@@ -1,8 +1,9 @@
 import { Button } from 'flowbite-react';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
+import { AuthContext } from '../../contexts/AuthContext';
 
 const Register = () => {
   const [username, setUsername] = useState('');
@@ -12,6 +13,7 @@ const Register = () => {
   const [summonerName, setSummonerName] = useState('');
   const [tag, setTag] = useState('');
   const [region, setRegion] = useState('');
+  const { login } = useContext(AuthContext);
 
   const navigate = useNavigate();
 
@@ -22,7 +24,7 @@ const Register = () => {
 
     const regexPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-    if (!regexPattern.test(email)) {
+    if (!regexPattern.test(email.trim())) {
       toast.error('Invalid email');
       return;
     }
@@ -30,19 +32,44 @@ const Register = () => {
     if (password === confirmPassword) {
       axios
         .post(`${import.meta.env.VITE_BACKEND_BASE_URI}/users/register`, {
-          name: username,
-          email: email,
+          name: username.trim(),
+          email: email.trim(),
           password: password,
-          summonerDetails: { summonerName, tag, region },
+          summonerDetails: {
+            summonerName: summonerName.trim(),
+            tag: tag.trim(),
+            region: region,
+          },
         })
-        .then((res) => {
+        .then(() => {
           toast.success('User registered successfully');
-          console.log(res);
           navigate('/');
         })
         .catch((err) => {
           toast.error(err.response?.data?.message || 'Error registering user');
           console.error(err);
+        })
+        // if successful, log the user in
+        .finally(() => {
+          axios
+            .post(
+              `${import.meta.env.VITE_BACKEND_BASE_URI}/users/login`,
+              {
+                email: email,
+                password: password,
+              },
+              {
+                withCredentials: true, // Include credentials (our jwt cookie)
+              }
+            )
+            .then((response) => {
+              login(response.data);
+              navigate('/');
+            })
+            .catch((error) => {
+              console.error('An error occurred:', error.response);
+              toast.error('Error logging in');
+            });
         });
     } else {
       toast.error('Passwords do not match');
@@ -89,7 +116,7 @@ const Register = () => {
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />
-          <h2 className='font-semibold  text-2xl'>Add Your Summoner Info</h2>
+          <h2 className="font-semibold  text-2xl">Add Your Summoner Info</h2>
           <label htmlFor="summonerName">Summoner Name</label>
           <input
             type="text"

@@ -72,7 +72,9 @@ const Profile = () => {
           // JSON parse returns an array of objects, we only need the first object
           setSummonerDetails(data[0]);
         } catch (error) {
-          toast.error(`Error fetching player rank, please check summoner details`);
+          toast.error(
+            `Error fetching player rank, please check summoner details`
+          );
         } finally {
           setIsLoading(false);
         }
@@ -88,31 +90,34 @@ const Profile = () => {
     const regexPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     // Check if email is valid
-    if (!regexPattern.test(email)) {
+    if (email && !regexPattern.test(email)) {
       toast.error('Invalid email');
       return;
     }
 
     // Check if password and confirm password match
-    if ((password && confirmPassword) && (password !== confirmPassword)) {
-      toast.error('Passwords do not match');
-      return;
+    if (password && confirmPassword) {
+      if (password !== confirmPassword) {
+        toast.error('Passwords do not match');
+        return;
+      }
     }
 
     // Update user data
     const updateData = {
-      name: username || userProfile.name,
-      email: email || userProfile.email,
+      name: username.trim() || userProfile.name,
+      email: email.trim() || userProfile.email,
+      password: password || undefined,
       summonerDetails:
         summonerName || tag || region
-          ? { summonerName, tag, region }
+          ? {
+              summonerName:
+                summonerName.trim() || userProfile.summonerDetails.summonerName,
+              tag: tag || userProfile.summonerDetails.tag,
+              region: region || userProfile.summonerDetails.region,
+            }
           : userProfile.summonerDetails,
     };
-
-    // If password is provided, add password to update data
-    if (password) {
-      updateData.password = password;
-    }
 
     axios
       .put(
@@ -122,7 +127,18 @@ const Profile = () => {
       )
       .then(() => {
         setSummonerDetails(updateData.summonerDetails);
-        localStorage.setItem('summonerDetails', JSON.stringify(updateData.summonerDetails));
+        localStorage.setItem(
+          'summonerDetails',
+          JSON.stringify(updateData.summonerDetails)
+        );
+
+        // eslint-disable-next-line no-unused-vars
+        const { password, ...rest } = updateData;
+        const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+        localStorage.setItem(
+          'userInfo',
+          JSON.stringify({...userInfo, ...rest })
+        );
         toast.success('Updated successfully');
       })
       .catch((err) => {
@@ -139,7 +155,7 @@ const Profile = () => {
     setSummonerName('');
     setTag('');
     setRegion('');
-  }
+  };
 
   return (
     <section className="flex justify-between">
