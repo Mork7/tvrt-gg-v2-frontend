@@ -71,13 +71,15 @@ const Login = () => {
             <Button color="failure" type="reset">
               Reset
             </Button>
-            <Button type="submit" className='pb-1 bg-purple-700 hover:bg-purple-800'>Login</Button>
+            <Button type="submit" color={'purple'} className="pb-1">
+              Login
+            </Button>
           </div>
         </form>
         <p className="text-center">
           Don&apos;t have an account?{' '}
           <a
-            className="text-teal-300 cursor-pointer hover:underline"
+            className="text-purple-500 cursor-pointer hover:underline"
             href="/register"
           >
             Register

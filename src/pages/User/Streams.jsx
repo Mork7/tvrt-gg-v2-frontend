@@ -18,7 +18,7 @@ const Streams = () => {
   return (
     <>
       <h1 className="font-semibold text-5xl flex justify-center mb-6">
-        LoL Twitch Streams
+        LoL <span className='text-purple-500'>Twitch</span> Streams
       </h1>
       {isLoading ? (
         <Spinner className="mx-auto flex mt-16" size={'xl'} />
