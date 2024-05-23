@@ -133,6 +133,7 @@ const Register = () => {
             onChange={(e) => setTag(e.target.value)}
             required
             maxLength={4}
+            placeholder='Do not include the "#"'
           />
           <div className="flex justify-between space-x-4">
             <div>
