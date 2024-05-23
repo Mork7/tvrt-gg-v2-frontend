@@ -113,7 +113,7 @@ const SummonerDetails = ({ summoner }) => {
           {allLeagueRanks?.map((rank, index) => (
             <div key={index}>
               <img
-                src={`./rank-icons/${rank.name.toLowerCase()}.webp`}
+                src={`./rank-icons/${rank.name.toLowerCase()}.png`}
                 alt="rank"
               />
               <p>{rank.name}</p>
