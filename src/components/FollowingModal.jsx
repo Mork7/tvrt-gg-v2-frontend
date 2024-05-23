@@ -20,7 +20,7 @@ const FollowingModal = ({ onClose, onAddSummoner }) => {
         newSummoner,
         { withCredentials: true }
       );
-      
+
       toast.warn('Adding summoner...');
       onAddSummoner(newSummoner);
       onClose();
@@ -43,6 +43,7 @@ const FollowingModal = ({ onClose, onAddSummoner }) => {
           className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
           onChange={(e) => setSummonerName(e.target.value)}
           required
+          placeholder="Summoner Name"
         />
         <label htmlFor="tag">Tag</label>
         <input
@@ -52,6 +53,7 @@ const FollowingModal = ({ onClose, onAddSummoner }) => {
           onChange={(e) => setTag(e.target.value)}
           maxLength={4}
           required
+          placeholder='Do not add the "#"'
         />
         <label className="font-semibold">Region</label>
 
