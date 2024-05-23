@@ -91,6 +91,7 @@ const Register = () => {
             className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
             onChange={(e) => setUsername(e.target.value)}
             required
+            placeholder="Username"
           />
           <label htmlFor="email">Email</label>
           <input
@@ -99,6 +100,7 @@ const Register = () => {
             className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
             onChange={(e) => setEmail(e.target.value)}
             required
+            placeholder="Email Address"
           />
           <label htmlFor="username">Password</label>
           <input
@@ -107,6 +109,7 @@ const Register = () => {
             className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
             onChange={(e) => setPassword(e.target.value)}
             required
+            placeholder="Password"
           />
           <label htmlFor="confirmPassword">Re-enter Password</label>
           <input
@@ -115,6 +118,7 @@ const Register = () => {
             className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
+            placeholder="Re-type Password"
           />
           <h2 className="font-semibold  text-2xl">Add Your Summoner Info</h2>
           <label htmlFor="summonerName">Summoner Name</label>
@@ -124,6 +128,7 @@ const Register = () => {
             className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
             onChange={(e) => setSummonerName(e.target.value)}
             required
+            placeholder="Summoner Name"
           />
           <label htmlFor="tag">Tag</label>
           <input
