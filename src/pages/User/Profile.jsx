@@ -164,7 +164,7 @@ const Profile = () => {
         {/* Update Button */}
         <div className="flex items-center space-x-3">
           <h1 className="font-semibold text-3xl mb-3">User Profile</h1>
-          <Button className="mb-2" onClick={() => setIsEditMode(!isEditMode)}>
+          <Button className="mb-2 bg-purple-700 hover:bg-purple-800" onClick={() => setIsEditMode(!isEditMode)}>
             Update User Info
           </Button>
         </div>

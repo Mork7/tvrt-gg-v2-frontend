@@ -8,11 +8,14 @@ import { Link } from 'react-router-dom';
 import { FaSearch } from 'react-icons/fa';
 import { SlUserFollowing } from 'react-icons/sl';
 import { MdPersonalVideo } from 'react-icons/md';
+import { useState } from 'react';
 
 const Navigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isActive = (path) => location.pathname === path;
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const { isLoggedIn, logout, userInfo, isAdmin } = useContext(AuthContext);
 
@@ -49,42 +52,43 @@ const Navigation = () => {
   };
 
   const clickDashboardHandler = () => {
-    isLoggedIn && isAdmin
-      ? navigate('/admin/dashboard')
-      : navigate('/login');
+    isLoggedIn && isAdmin ? navigate('/admin/dashboard') : navigate('/login');
   };
 
   return (
-    <Navbar fluid rounded className="bg-gray-800 text-white h-16 p-3 ">
-      <Link href="/" className="text-3xl font-semibold">
-        TVRT.GG
+    <Navbar fluid className="bg-gray-800 text-white h-19 p-3">
+      <Link href="/" className="text-5xl font-semibold">
+        TVRT<span className="text-purple-500 font-bold">GAMING</span>
       </Link>
 
       {/* Nav buttons */}
-      <Navbar.Collapse>
+      <Navbar.Collapse className="mr-28">
         <Navbar.Link
           href="/"
-          active={isActive('/')}
-          className="text-xl flex justify-center items-center"
+          className={`text-xl flex justify-center items-center ${
+            isActive('/') ? 'text-purple-500' : ''
+          }`}
         >
           Search
           <FaSearch className="ml-2" />
         </Navbar.Link>
         <Navbar.Link
           href="/following"
-          active={isActive('/following')}
-          className="text-xl flex justify-center items-center"
+          className={`text-xl flex justify-center items-center ${
+            isActive('/following') ? 'text-purple-500' : ''
+          }`}
         >
           Following
           <SlUserFollowing className="ml-2" />
         </Navbar.Link>
         <Navbar.Link
           href="/streams"
-          active={isActive('/streams')}
-          className="text-xl flex justify-between items-center"
+          className={`text-xl flex justify-center items-center ${
+            isActive('/streams') ? 'text-purple-500' : ''
+          }`}
         >
           Streams
-          <MdPersonalVideo className='ml-2' />
+          <MdPersonalVideo className="ml-2" />
         </Navbar.Link>
       </Navbar.Collapse>
 
@@ -93,52 +97,63 @@ const Navigation = () => {
         <Button
           onClick={() => navigate('/login')}
           className={`${isActive('/login') ? 'ring-2 ring-teal-300' : ''}`}
+          color={'purple'}
         >
           Login
         </Button>
       ) : (
+        // DROP DOWN
         <div className="flex md:order-2">
-          <p className="self-center mr-3">{userInfo?.name}</p>
-          <Dropdown
-            arrowIcon={false}
-            inline
-            label={<Avatar alt="User settings" rounded />}
-            className="bg-gray-600"
+          <p
+            className={`self-center mr-3 hover:text-purple-500 cursor-pointer ${
+              isDropdownOpen ? 'text-purple-500' : ''
+            }`}
           >
-            <Dropdown.Header className=" text-black">
-              {/* Username */}
-              <span className="block text-lg">{userInfo?.name}</span>
-              {/* Email */}
-              <span className="block truncate text-lg font-medium">
-                {userInfo?.email}
-              </span>
-            </Dropdown.Header>
-            {/* TODO If isAdmin, they have a dashboard */}
-            {isAdmin && (
-              <Dropdown.Item
-                onClick={clickDashboardHandler}
-                className=" text-black text-lg"
-              >
-                Dashboard
-              </Dropdown.Item>
-            )}
-            <Dropdown.Item
-              onClick={clickProfileHandler}
-              className=" text-black text-lg"
+            {userInfo?.name}
+          </p>
+          <div onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+            <Dropdown
+              arrowIcon={false}
+              inline
+              label={<Avatar alt="User settings" rounded />}
+              className="bg-gray-600"
+              show={isDropdownOpen}
             >
-              Profile
-            </Dropdown.Item>
-            <Dropdown.Divider />
-            {/* If logged in display logout button */}
-            {isLoggedIn && (
+              <Dropdown.Header className=" text-black">
+                {/* Username */}
+                <span className="block text-lg">{userInfo?.name}</span>
+                {/* Email */}
+                <span className="block truncate text-lg font-medium">
+                  {userInfo?.email}
+                </span>
+              </Dropdown.Header>
+              {/* TODO If isAdmin, they have a dashboard */}
+              {isAdmin && (
+                <Dropdown.Item
+                  onClick={clickDashboardHandler}
+                  className=" text-black text-lg"
+                >
+                  Dashboard
+                </Dropdown.Item>
+              )}
               <Dropdown.Item
-                onClick={logoutHandler}
+                onClick={clickProfileHandler}
                 className=" text-black text-lg"
               >
-                Logout
+                Profile
               </Dropdown.Item>
-            )}
-          </Dropdown>
+              <Dropdown.Divider />
+              {/* If logged in display logout button */}
+              {isLoggedIn && (
+                <Dropdown.Item
+                  onClick={logoutHandler}
+                  className=" text-black text-lg"
+                >
+                  Logout
+                </Dropdown.Item>
+              )}
+            </Dropdown>
+          </div>
         </div>
       )}
     </Navbar>

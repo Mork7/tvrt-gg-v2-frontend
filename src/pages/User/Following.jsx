@@ -255,7 +255,8 @@ const Following = () => {
         ) : (
           <div className="flex flex-col space-y-5 w-full">
             <h1 className="text-center text-5xl font-semibold">
-              <span>{userInfo.name}&apos;s Boys</span>
+              {userInfo.name}&apos;s{' '}
+              <span className="text-purple-500">Boys</span>
             </h1>
             {/* OUR TABLE */}
             <table className="border text-2xl">
@@ -270,9 +271,10 @@ const Following = () => {
                         width: '3rem',
                         height: '2rem',
                       }}
-                      className="flex justify-center items-center"
+                      className="flex justify-center items-center "
+                      color={'purple'}
                     >
-                      <span className="text-5xl">+</span>
+                      <span className="text-5xl mb-0.5">+</span>
                     </Button>
                   </td>
                   <td className="border p-3">Rank</td>

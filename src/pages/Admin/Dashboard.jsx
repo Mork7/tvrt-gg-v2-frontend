@@ -83,6 +83,7 @@ const Dashboard = () => {
               <td className="flex justify-evenly">
                 <Button
                   className="my-2"
+                  color={'purple'}
                   onClick={() => {
                     setCurrentUserId(user._id);
                     setShowUpdateUserModal(!showUpdateUserModal);
