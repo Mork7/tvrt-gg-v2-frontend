@@ -1,16 +1,16 @@
 const selectRankImage = (rank) => {
     const imagePathDict = {
         unranked: './rank-icons/unranked.png',
-        iron: './rank-icons/iron.webp',
-        bronze: './rank-icons/bronze.webp',
-        silver: './rank-icons/silver.webp',
-        gold: './rank-icons/gold.webp',
-        platinum: './rank-icons/platinum.webp',
-        emerald: './rank-icons/emerald.webp',
-        diamond: './rank-icons/diamond.webp',
-        master: './rank-icons/master.webp',
-        grandmaster: './rank-icons/grandmaster.webp',
-        challenger: './rank-icons/challenger.webp',
+        iron: './rank-icons/iron.png',
+        bronze: './rank-icons/bronze.png',
+        silver: './rank-icons/silver.png',
+        gold: './rank-icons/gold.png',
+        platinum: './rank-icons/platinum.png',
+        emerald: './rank-icons/emerald.png',
+        diamond: './rank-icons/diamond.png',
+        master: './rank-icons/master.png',
+        grandmaster: './rank-icons/grandmaster.png',
+        challenger: './rank-icons/challenger.png',
     };
 
     switch (true) {
