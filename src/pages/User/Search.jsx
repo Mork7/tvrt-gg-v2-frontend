@@ -239,7 +239,7 @@ const Home = () => {
             <Button color="failure" type="reset">
               Reset
             </Button>
-            <Button type="submit">Submit</Button>
+            <Button type="submit" className='pb-1'>Submit</Button>
           </div>
         </form>
       </div>

@@ -71,7 +71,7 @@ const Login = () => {
             <Button color="failure" type="reset">
               Reset
             </Button>
-            <Button type="submit">Login</Button>
+            <Button type="submit" className='pb-1'>Login</Button>
           </div>
         </form>
         <p className="text-center">

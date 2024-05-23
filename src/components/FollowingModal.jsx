@@ -236,7 +236,9 @@ const FollowingModal = ({ onClose, onAddSummoner }) => {
           <Button color="failure" onClick={onClose}>
             Close
           </Button>
-          <Button type="submit">Submit</Button>
+          <Button type="submit" className="pb-1">
+            Submit
+          </Button>
         </div>
       </form>
     </div>
