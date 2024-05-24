@@ -254,10 +254,14 @@ const Following = () => {
           </>
         ) : (
           <div className="flex flex-col space-y-5 w-full">
-            <h1 className="text-center text-5xl font-semibold">
+            <h1 className="text-5xl font-semibold text-center">
               {userInfo.name}&apos;s{' '}
-              <span className="text-purple-500">Boys</span>
+              <span className="text-purple-500">Leaderboard</span>
             </h1>
+            <h2 className="text-xl text-center">
+              Add your friends, rivals, or any other summoners you&apos;d like
+              to follow!
+            </h2>
             {/* OUR TABLE */}
             <table className="border text-2xl">
               <thead className="border">
