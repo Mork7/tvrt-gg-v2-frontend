@@ -1,22 +1,25 @@
 import { Button } from 'flowbite-react';
 
 const ContactUs = () => {
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
 
-    const formData = new FormData(e.target);
-  };
+  //   const formData = new FormData(e.target);
+  // };
 
   return (
-  <section className="flex justify-center font-semibold">
+    <section className="flex justify-center font-semibold">
       <div className="flex flex-col space-y-3 w-[30rem]">
         <h1 className="text-4xl">Contact Us</h1>
         <h2 className="text-2xl mb-3 font-normal">
-          If you have any suggestions, or feedback, please feel free to send us
-          a message! We greatly appreciate any feedback that can help us improve
-          your experience.
+          If you have any suggestions please feel free to send us a message! We
+          greatly appreciate any feedback that can help us improve your
+          experience.
         </h2>
-        <form onSubmit={handleSubmit} className="text-black space-y-3">
+        <form
+          //  onSubmit={handleSubmit}
+          className="text-black space-y-3"
+        >
           <label htmlFor="email" className="block text-xl text-white">
             Name:
           </label>

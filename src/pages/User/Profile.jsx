@@ -249,8 +249,7 @@ const Profile = () => {
               <h2 className="font-semibold text-xl">
                 Email: {userProfile?.email}
               </h2>
-
-              {/* Friends */}
+              {/* Friends
               <h2 className="font-semibold text-xl">
                 Friends: {userProfile?.friends?.length === 0 && 0}
               </h2>
@@ -265,8 +264,7 @@ const Profile = () => {
                     #{summoner?.tag.toUpperCase()}
                   </span>
                 </p>
-              ))}
-
+              ))} */}
               {/* Following */}
               <h2 className="font-semibold text-xl">
                 Following: {userProfile.following.length === 0 && 0}
