@@ -44,9 +44,9 @@ const Login = () => {
   };
 
   return (
-    <section className="flex justify-center">
+    <section className="flex justify-center font-semibold ">
       <div>
-        <h1 className="font-semibold text-4xl mb-3">Login</h1>
+        <h1 className="text-4xl mb-3">Login</h1>
         <form
           onSubmit={onLoginHandler}
           className="flex flex-col space-y-3 w-[30rem]"

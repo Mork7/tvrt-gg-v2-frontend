@@ -32,7 +32,7 @@ const FollowingModal = ({ onClose, onAddSummoner }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50 font-semibold">
       <form
         onSubmit={onSubmitHandler}
         className="flex flex-col space-y-3 w-[40rem] mt-5 border p-3 rounded-md fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-800 z-50"

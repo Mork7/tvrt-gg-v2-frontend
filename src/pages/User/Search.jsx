@@ -29,9 +29,9 @@ const Home = () => {
   };
 
   return (
-    <section className="flex justify-center">
+    <section className="flex justify-center font-semibold">
       <div>
-        <h1 className="font-semibold text-4xl mb-3">Search For Summoner</h1>
+        <h1 className="text-4xl mb-3">Search For Summoner</h1>
         {/* Summoner search form */}
         <form
           onSubmit={onSubmitHandler}
