@@ -19,6 +19,7 @@ import Leaderboard from './pages/User/Leaderboard.jsx';
 import Profile from './pages/User/Profile.jsx';
 import Streams from './pages/User/Streams.jsx';
 import Home from './pages/Home.jsx';
+import ContactUs from './pages/ContactUs.jsx';
 
 // Admin Pages
 import Dashboard from './pages/Admin/Dashboard.jsx';
@@ -27,12 +28,13 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
       <Route index element={<Home />} />
-      <Route path='search' element={<Search />} />
+      <Route path="search" element={<Search />} />
       <Route path="register" element={<Register />} />
       <Route path="login" element={<Login />} />
       <Route path="following" element={<Leaderboard />} />
       <Route path="profile" element={<Profile />} />
       <Route path="streams" element={<Streams />} />
+      <Route path="contact" element={<ContactUs />} />
       <Route path="admin">
         <Route path="dashboard" element={<Dashboard />} />
       </Route>

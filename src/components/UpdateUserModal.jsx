@@ -39,21 +39,23 @@ const UpdateUserModal = ({ onClose, userId, onUpdateUser }) => {
         <input
           type="email"
           id="email"
-          className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
+          className="w-full p-2 rounded-lg focus:ring-4 focus:ring-purple-700"
           onChange={(e) => setEmail(e.target.value)}
         />
         <label htmlFor="username">Username</label>
         <input
           type="text"
           id="username"
-          className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
+          className="w-full p-2 rounded-lg focus:ring-4 focus:ring-purple-700"
           onChange={(e) => setName(e.target.value)}
         />
         <div className="flex justify-between">
           <Button color="failure" onClick={onClose}>
             Close
           </Button>
-          <Button type="submit" className='pb-1'>Submit</Button>
+          <Button type="submit" className="pb-1">
+            Submit
+          </Button>
         </div>
       </form>
     </div>

@@ -41,7 +41,7 @@ const FollowingModal = ({ onClose, onAddSummoner }) => {
         <input
           type="text"
           id="name"
-          className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
+          className="w-full p-2 rounded-lg focus:ring-4 focus:ring-purple-700"
           onChange={(e) => setSummonerName(e.target.value)}
           required
           placeholder="Summoner Name"
@@ -50,7 +50,7 @@ const FollowingModal = ({ onClose, onAddSummoner }) => {
         <input
           type="text"
           id="tag"
-          className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
+          className="w-full p-2 rounded-lg focus:ring-4 focus:ring-purple-700"
           onChange={(e) => setTag(e.target.value)}
           maxLength={4}
           required

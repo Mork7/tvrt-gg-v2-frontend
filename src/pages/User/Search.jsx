@@ -31,7 +31,7 @@ const Home = () => {
   return (
     <section className="flex justify-center">
       <div>
-        <h1 className="font-semibold text-3xl mb-3">Search For Summoner</h1>
+        <h1 className="font-semibold text-4xl mb-3">Search For Summoner</h1>
         {/* Summoner search form */}
         <form
           onSubmit={onSubmitHandler}
@@ -43,7 +43,7 @@ const Home = () => {
           <input
             type="text"
             id="summonerName"
-            className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
+            className="w-full p-2 rounded-lg focus:ring-4 focus:ring-purple-700"
             required
             onChange={(e) => setSummoner(e.target.value)}
             placeholder="Summoner Name"
@@ -54,10 +54,11 @@ const Home = () => {
           <input
             type="text"
             id="tag"
-            className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
+            className="w-full p-2 rounded-lg focus:ring-4 focus:ring-purple-700"
             required
             onChange={(e) => setTag(e.target.value)}
             maxLength={4}
+            placeholder='Do not add the "#"'
           />
           <Region setRegion={setRegion} />
           <div className="flex justify-between">

@@ -80,7 +80,7 @@ const Register = () => {
   return (
     <section className="flex justify-center">
       <div>
-        <h1 className="font-semibold text-3xl mb-3">Register</h1>
+        <h1 className="font-semibold text-4xl mb-3">Register</h1>
         <form
           onSubmit={onSubmitHandler}
           className="flex flex-col space-y-3 w-[30rem]"
@@ -89,7 +89,7 @@ const Register = () => {
           <input
             type="text"
             id="username"
-            className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
+            className="w-full p-2 rounded-lg focus:ring-4 focus:ring-purple-700"
             onChange={(e) => setUsername(e.target.value)}
             required
             placeholder="Username"
@@ -98,7 +98,7 @@ const Register = () => {
           <input
             type="email"
             id="email"
-            className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
+            className="w-full p-2 rounded-lg focus:ring-4 focus:ring-purple-700"
             onChange={(e) => setEmail(e.target.value)}
             required
             placeholder="Email Address"
@@ -107,7 +107,7 @@ const Register = () => {
           <input
             type="password"
             id="password"
-            className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
+            className="w-full p-2 rounded-lg focus:ring-4 focus:ring-purple-700"
             onChange={(e) => setPassword(e.target.value)}
             required
             placeholder="Password"
@@ -116,7 +116,7 @@ const Register = () => {
           <input
             type="password"
             id="confirmPassword"
-            className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
+            className="w-full p-2 rounded-lg focus:ring-4 focus:ring-purple-700"
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
             placeholder="Re-type Password"
@@ -128,7 +128,7 @@ const Register = () => {
           <input
             type="text"
             id="summonerName"
-            className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
+            className="w-full p-2 rounded-lg focus:ring-4 focus:ring-purple-700"
             onChange={(e) => setSummonerName(e.target.value)}
             required
             placeholder="Summoner Name"
@@ -139,11 +139,11 @@ const Register = () => {
           <input
             type="text"
             id="tag"
-            className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
+            className="w-full p-2 rounded-lg focus:ring-4 focus:ring-purple-700"
             onChange={(e) => setTag(e.target.value)}
             required
             maxLength={4}
-            placeholder='Do not include the "#"'
+            placeholder='Do not add the "#"'
           />
           <Region setRegion={setRegion} />
           <div className="flex justify-between">

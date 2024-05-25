@@ -46,7 +46,7 @@ const Login = () => {
   return (
     <section className="flex justify-center">
       <div>
-        <h1 className="font-semibold text-3xl mb-3">Login</h1>
+        <h1 className="font-semibold text-4xl mb-3">Login</h1>
         <form
           onSubmit={onLoginHandler}
           className="flex flex-col space-y-3 w-[30rem]"
@@ -55,7 +55,7 @@ const Login = () => {
           <input
             type="email"
             id="email"
-            className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
+            className="w-full p-2 rounded-lg focus:ring-4 focus:ring-purple-700"
             onChange={(e) => setEmail(e.target.value)}
             required
           />
@@ -63,7 +63,7 @@ const Login = () => {
           <input
             type="password"
             id="password"
-            className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
+            className="w-full p-2 rounded-lg focus:ring-4 focus:ring-purple-700"
             onChange={(e) => setPassword(e.target.value)}
             required
           />

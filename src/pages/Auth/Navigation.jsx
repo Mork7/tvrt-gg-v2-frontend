@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import { FaSearch } from 'react-icons/fa';
 import { SlUserFollowing } from 'react-icons/sl';
 import { MdPersonalVideo } from 'react-icons/md';
+import { MdContactMail } from 'react-icons/md';
 import { useState } from 'react';
 
 const Navigation = () => {
@@ -88,6 +89,15 @@ const Navigation = () => {
         >
           Streams
           <MdPersonalVideo className="ml-2" />
+        </Navbar.Link>
+        <Navbar.Link
+          href="/contact"
+          className={`text-xl flex justify-center items-center ${
+            isActive('/contact') ? 'text-purple-500' : ''
+          }`}
+        >
+          Contact Us
+          <MdContactMail className="ml-2" />
         </Navbar.Link>
       </Navbar.Collapse>
 
