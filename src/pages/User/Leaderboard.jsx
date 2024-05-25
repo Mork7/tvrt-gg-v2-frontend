@@ -7,7 +7,7 @@ import FollowingModal from '../../components/FollowingModal';
 import selectRankImage from '../../utils/selectRankImage';
 import axios from 'axios';
 
-const Following = () => {
+const Leaderboard = () => {
   // Declarations
   const { isLoggedIn } = useContext(AuthContext);
   const [followingStats, setFollowingStats] = useState(
@@ -360,4 +360,4 @@ const Following = () => {
   );
 };
 
-export default Following;
+export default Leaderboard;

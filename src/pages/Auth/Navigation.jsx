@@ -63,9 +63,9 @@ const Navigation = () => {
       {/* Nav buttons */}
       <Navbar.Collapse className="mr-28">
         <Navbar.Link
-          href="/"
+          href="/search"
           className={`text-xl flex justify-center items-center ${
-            isActive('/') ? 'text-purple-500' : ''
+            isActive('/search') ? 'text-purple-500' : ''
           }`}
         >
           Search
@@ -77,7 +77,7 @@ const Navigation = () => {
             isActive('/following') ? 'text-purple-500' : ''
           }`}
         >
-          Following
+          Leaderboard
           <SlUserFollowing className="ml-2" />
         </Navbar.Link>
         <Navbar.Link

@@ -15,9 +15,10 @@ import { AuthProvider } from './contexts/AuthContext.jsx';
 import Register from './pages/Auth/Register.jsx';
 import Login from './pages/Auth/Login.jsx';
 import Search from './pages/User/Search.jsx';
-import Following from './pages/User/Following.jsx';
+import Leaderboard from './pages/User/Leaderboard.jsx';
 import Profile from './pages/User/Profile.jsx';
 import Streams from './pages/User/Streams.jsx';
+import Home from './pages/Home.jsx';
 
 // Admin Pages
 import Dashboard from './pages/Admin/Dashboard.jsx';
@@ -25,10 +26,11 @@ import Dashboard from './pages/Admin/Dashboard.jsx';
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
-      <Route index element={<Search />} />
+      <Route index element={<Home />} />
+      <Route path='search' element={<Search />} />
       <Route path="register" element={<Register />} />
       <Route path="login" element={<Login />} />
-      <Route path="following" element={<Following />} />
+      <Route path="following" element={<Leaderboard />} />
       <Route path="profile" element={<Profile />} />
       <Route path="streams" element={<Streams />} />
       <Route path="admin">
