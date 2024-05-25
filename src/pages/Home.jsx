@@ -38,7 +38,7 @@ const Home = () => {
         </p>
       </div>
       <img
-        className="h-[51.5rem] w-[80rem] ml-12 rounded-lg border flex justify-center p-4"
+        className="h-[51.5rem] w-[80rem] ml-12 rounded-lg flex justify-center p-4"
         src="https://arc-anglerfish-washpost-prod-washpost.s3.amazonaws.com/public/AAW3H3YGWRBOTJ6OWY65HA3A4M.jpg"
         alt="League of Legends Champions"
       />
