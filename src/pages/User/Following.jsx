@@ -315,6 +315,11 @@ const Following = () => {
                         className="mr-2 w-10"
                       />
                       {user?.rank}{' '}
+                      {user.rank === 'Unranked'
+                        ? ''
+                        : user.rank.includes('Challenger')
+                        ? ''
+                        : `${user?.lp} LP`}
                     </td>
                     <td className="border p-3">{user?.winLossRatio}</td>
                     <td className="border p-3">
