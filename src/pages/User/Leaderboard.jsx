@@ -240,7 +240,7 @@ const Leaderboard = () => {
           <h1 className="text-center text-3xl">
             To render this leaderboard, you must be{' '}
             <a
-              className="text-teal-300 cursor-pointer hover:underline"
+              className="text-purple-500 cursor-pointer hover:underline"
               href="/login"
             >
               logged in
