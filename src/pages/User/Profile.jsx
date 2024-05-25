@@ -138,7 +138,7 @@ const Profile = () => {
         const userInfo = JSON.parse(localStorage.getItem('userInfo'));
         localStorage.setItem(
           'userInfo',
-          JSON.stringify({...userInfo, ...rest })
+          JSON.stringify({ ...userInfo, ...rest })
         );
         toast.success('Updated successfully');
       })
@@ -166,7 +166,11 @@ const Profile = () => {
         {/* Update Button */}
         <div className="flex items-center space-x-3">
           <h1 className="font-semibold text-3xl mb-3">User Profile</h1>
-          <Button className="mb-2 " color={'purple'} onClick={() => setIsEditMode(!isEditMode)}>
+          <Button
+            className="mb-2 "
+            color={'purple'}
+            onClick={() => setIsEditMode(!isEditMode)}
+          >
             Update User Info
           </Button>
         </div>
@@ -183,14 +187,18 @@ const Profile = () => {
                 className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
                 onChange={(e) => setUsername(e.target.value)}
               />
-              <label htmlFor="email">Email</label>
+              <label htmlFor="email" className="font-semibold">
+                Email
+              </label>
               <input
                 type="email"
                 id="email"
                 className="rounded-md bg-gray-400 focus:ring-2 focus:ring-teal-600"
                 onChange={(e) => setEmail(e.target.value)}
               />
-              <label htmlFor="username">Password</label>
+              <label htmlFor="username" className="font-semibold">
+                Password
+              </label>
               <input
                 type="password"
                 id="password"
@@ -208,7 +216,7 @@ const Profile = () => {
                 <Button color="failure" type="reset" onClick={handleReset}>
                   Reset
                 </Button>
-                <Button type="submit">Submit</Button>
+                <Button type="submit" color={'purple'}>Submit</Button>
               </div>
               <h2 className="font-semibold  text-2xl">
                 Edit Your Summoner Info
@@ -229,7 +237,7 @@ const Profile = () => {
                 maxLength={4}
               />
               {/* Region selection */}
-           <Region setRegion={setRegion}/>
+              <Region setRegion={setRegion} />
             </form>
           ) : (
             // Form for updating

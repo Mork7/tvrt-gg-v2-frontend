@@ -29,9 +29,8 @@ const Navigation = () => {
             withCredentials: true, // Include credentials (cookies)
           }
         )
-        .then((response) => {
+        .then(() => {
           logout(); // Clear user info and auth state
-          console.log('Logout successful:', response.data);
           toast.success('Logged out successfully');
           navigate('/login'); // Navigate to login page
         })
