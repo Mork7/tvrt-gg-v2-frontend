@@ -4,8 +4,14 @@ import emailjs from '@emailjs/browser';
 import { toast } from 'react-toastify';
 
 const ContactUs = () => {
+
+  // useRef hook let's use persist values across renders
   const form = useRef();
 
+  /**
+   * This function sends an email to the admin with the feedback of the user, using emailjs
+   * @param {*} e 
+   */
   const sendEmail = (e) => {
     e.preventDefault();
 
@@ -28,6 +34,7 @@ const ContactUs = () => {
           console.log('FAILED...', error.text);
         }
       );
+      // reset the form after sending the email
     e.target.reset();
   };
 

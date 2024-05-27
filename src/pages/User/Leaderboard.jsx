@@ -317,7 +317,9 @@ const Leaderboard = () => {
                       {user?.rank}{' '}
                       {user.rank === 'Unranked'
                         ? ''
-                        : user.rank.includes('Challenger')
+                        : user.rank.includes('Challenger') ||
+                          user.rank.includes('Master') ||
+                          user.rank.includes('Diamond')
                         ? ''
                         : `${user?.lp} LP`}
                     </td>
