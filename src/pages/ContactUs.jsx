@@ -1,11 +1,35 @@
 import { Button } from 'flowbite-react';
+import { useRef } from 'react';
+import emailjs from '@emailjs/browser';
+import { toast } from 'react-toastify';
 
 const ContactUs = () => {
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
+  const form = useRef();
 
-  //   const formData = new FormData(e.target);
-  // };
+  const sendEmail = (e) => {
+    e.preventDefault();
+
+    emailjs
+      .sendForm(
+        `${import.meta.env.VITE_EMAIL_SERVICE_ID}`,
+        `${import.meta.env.VITE_EMAIL_TEMPLATE_ID}`,
+        form.current,
+        {
+          publicKey: `${import.meta.env.VITE_EMAIL_PUBLIC_KEY}`,
+        }
+      )
+      .then(
+        (result) => {
+          toast.success('Feedback sent successfully, thank you!');
+          console.log('SUCCESS!', result.text);
+        },
+        (error) => {
+          toast.error('Failed to send email');
+          console.log('FAILED...', error.text);
+        }
+      );
+    e.target.reset();
+  };
 
   return (
     <section className="flex justify-center font-semibold">
@@ -16,10 +40,7 @@ const ContactUs = () => {
           greatly appreciate any feedback that can help us improve your
           experience.
         </h2>
-        <form
-          //  onSubmit={handleSubmit}
-          className="text-black space-y-3"
-        >
+        <form onSubmit={sendEmail} className="text-black space-y-3" ref={form}>
           <label htmlFor="email" className="block text-xl text-white">
             Name:
           </label>
@@ -36,6 +57,15 @@ const ContactUs = () => {
             type="email"
             name="email"
             id="email"
+            className="w-full p-2 rounded-lg focus:ring-4 focus:ring-purple-700"
+          />
+          <label htmlFor="email" className="block text-xl text-white">
+            Subject:
+          </label>
+          <input
+            type="text"
+            name="subject"
+            id="subject"
             className="w-full p-2 rounded-lg focus:ring-4 focus:ring-purple-700"
           />
           <label htmlFor="message" className="block text-xl text-white">
