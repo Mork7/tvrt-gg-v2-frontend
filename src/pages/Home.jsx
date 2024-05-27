@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 const Home = () => {
   return (
     <section className="flex justify-between text-xl">
-      <div className="flex flex-col text-center space-y-16">
+      <div className="flex flex-col text-center space-y-16 mt-3">
         <h1 className="font-semibold text-4xl">
           Welcome to TVRT<span className="text-purple-500">GAMING</span>
         </h1>
