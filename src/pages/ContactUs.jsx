@@ -4,13 +4,12 @@ import emailjs from '@emailjs/browser';
 import { toast } from 'react-toastify';
 
 const ContactUs = () => {
-
   // useRef hook let's use persist values across renders
   const form = useRef();
 
   /**
    * This function sends an email to the admin with the feedback of the user, using emailjs
-   * @param {*} e 
+   * @param {*} e
    */
   const sendEmail = (e) => {
     e.preventDefault();
@@ -34,7 +33,7 @@ const ContactUs = () => {
           console.log('FAILED...', error.text);
         }
       );
-      // reset the form after sending the email
+    // reset the form after sending the email
     e.target.reset();
   };
 
@@ -56,6 +55,7 @@ const ContactUs = () => {
             name="name"
             id="name"
             className="w-full p-2 rounded-lg focus:ring-4 focus:ring-purple-700"
+            required
           />
           <label htmlFor="email" className="block text-xl text-white">
             Email:
@@ -65,6 +65,7 @@ const ContactUs = () => {
             name="email"
             id="email"
             className="w-full p-2 rounded-lg focus:ring-4 focus:ring-purple-700"
+            required
           />
           <label htmlFor="email" className="block text-xl text-white">
             Subject:
@@ -74,6 +75,7 @@ const ContactUs = () => {
             name="subject"
             id="subject"
             className="w-full p-2 rounded-lg focus:ring-4 focus:ring-purple-700"
+            required
           />
           <label htmlFor="message" className="block text-xl text-white">
             Message:
@@ -83,6 +85,7 @@ const ContactUs = () => {
             id="message"
             className="w-full p-2 rounded-lg focus:ring-4 focus:ring-purple-700"
             rows={5}
+            required
           ></textarea>
           <div className="flex justify-between">
             <Button color="failure" type="reset">
