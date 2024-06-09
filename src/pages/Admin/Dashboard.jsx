@@ -1,14 +1,9 @@
-/** router.route('/').get(authenticateUser, authorizeAdmin, getAllUsers);
-router
-.route('/:id')
-.delete(authenticateUser, authorizeAdmin, deleteUser)
-.put(authenticateUser, authorizeAdmin, updateUserById);
-*/
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import { Button } from 'flowbite-react';
-import UpdateUserModal from '../../components/UpdateUserModal';
-import { toast } from 'react-toastify';
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { Button } from "flowbite-react";
+import UpdateUserModal from "../../components/UpdateUserModal";
+import { toast } from "react-toastify";
+import { Navigate } from "react-router-dom";
 
 const Dashboard = () => {
   const [users, setUsers] = useState([]);
@@ -16,6 +11,10 @@ const Dashboard = () => {
   const [currentUserId, setCurrentUserId] = useState(null);
 
   useEffect(() => {
+    if (!localStorage.getItem("isAdmin")) {
+      return;
+    }
+
     const fetchUsers = async () => {
       const { data } = await axios.get(
         `${import.meta.env.VITE_BACKEND_BASE_URI}/users`,
@@ -26,6 +25,10 @@ const Dashboard = () => {
     };
     fetchUsers();
   }, []);
+
+  if (!localStorage.getItem("isAdmin")) {
+    return <Navigate to="/login" replace />;
+  }
 
   const onClose = () => {
     setShowUpdateUserModal(false);
@@ -40,7 +43,7 @@ const Dashboard = () => {
 
   const onDeleteUser = async (userId) => {
     const deletionConfirmed = window.confirm(
-      'Are you sure you want to remove this summoner?'
+      "Are you sure you want to remove this summoner?"
     );
     if (deletionConfirmed) {
       try {
@@ -49,9 +52,9 @@ const Dashboard = () => {
           { withCredentials: true }
         );
         setUsers(users.filter((user) => user._id !== userId));
-        toast.success('User deleted');
+        toast.success("User deleted");
       } catch (error) {
-        toast.error('Error deleting user');
+        toast.error("Error deleting user");
         console.error(`Error deleting user: ${error.message}`);
       }
     }
@@ -78,12 +81,12 @@ const Dashboard = () => {
               <td className="border p-3">
                 {user.summonerDetails
                   ? `${user.summonerDetails.summonerName} #${user.summonerDetails.tag}`
-                  : 'No Summoner Details'}
+                  : "No Summoner Details"}
               </td>
               <td className="flex justify-evenly">
                 <Button
                   className="my-2"
-                  color={'purple'}
+                  color={"purple"}
                   onClick={() => {
                     setCurrentUserId(user._id);
                     setShowUpdateUserModal(!showUpdateUserModal);
@@ -93,7 +96,7 @@ const Dashboard = () => {
                 </Button>
                 <Button
                   className="my-2"
-                  color={'failure'}
+                  color={"failure"}
                   onClick={() => onDeleteUser(user._id)}
                 >
                   Delete User
