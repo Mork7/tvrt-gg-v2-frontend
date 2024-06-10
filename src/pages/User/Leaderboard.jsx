@@ -1,20 +1,22 @@
-import { useContext, useEffect, useState } from 'react';
-import { AuthContext } from '../../contexts/AuthContext';
-import { getPlayerRank } from '../../utils/leagueApi';
-import { Spinner, Button } from 'flowbite-react';
-import { toast } from 'react-toastify';
-import FollowingModal from '../../components/FollowingModal';
-import selectRankImage from '../../utils/selectRankImage';
-import axios from 'axios';
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../../contexts/AuthContext";
+import { getPlayerRank } from "../../utils/leagueApi";
+import { Spinner, Button } from "flowbite-react";
+import { toast } from "react-toastify";
+import FollowingModal from "../../components/FollowingModal";
+import selectRankImage from "../../utils/selectRankImage";
+import axios from "axios";
+import { FiRefreshCcw } from "react-icons/fi";
 
 const Leaderboard = () => {
   // Declarations
   const { isLoggedIn } = useContext(AuthContext);
   const [followingStats, setFollowingStats] = useState(
-    JSON.parse(localStorage.getItem('followingStats')) || []
+    JSON.parse(localStorage.getItem("followingStats")) || []
   );
   const [isLoading, setIsLoading] = useState(true);
-  const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+  const [isRefetching, setIsRefetching] = useState(false);
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   const [showAddSummoner, setShowAddSummoner] = useState(false);
   const [mayNotExist, setMayNotExist] = useState([]);
 
@@ -40,12 +42,12 @@ const Leaderboard = () => {
 
         // Collect the names of the summoners that don't exist
         const rejectedSummoners = stats
-          .filter((result) => result.status === 'rejected')
+          .filter((result) => result.status === "rejected")
           .map(
             (result) =>
-              result.reason.params.name.split('-')[0] +
-              ' #' +
-              result.reason.params.name.split('-')[1].toUpperCase()
+              result.reason.params.name.split("-")[0] +
+              " #" +
+              result.reason.params.name.split("-")[1].toUpperCase()
           );
         // Update the state with the summoners that may not exist
         setMayNotExist(rejectedSummoners);
@@ -54,26 +56,26 @@ const Leaderboard = () => {
         if (rejectedSummoners.length > 0) {
           toast.error(
             `The following summoners may not exist: ${rejectedSummoners.join(
-              ', '
+              ", "
             )}`
           );
         }
         // filter out the fulfilled promises
         const fulfilledSummoners = stats
-          .filter((result) => result.status === 'fulfilled')
+          .filter((result) => result.status === "fulfilled")
           .map((result) => result.value);
         // flatten the array of arrays to get the objects
         const flattenedStats = fulfilledSummoners.flat();
         // update the state with the fetched stats
         setFollowingStats(flattenedStats);
         // update the local storage with the fetched stats
-        localStorage.setItem('followingStats', JSON.stringify(flattenedStats));
+        localStorage.setItem("followingStats", JSON.stringify(flattenedStats));
         // notify the user that the stats have been fetched
-        toast.success('Fetched summoners stats successfully');
+        toast.success("Fetched summoners stats successfully");
       } catch (error) {
         // notify the user that there was an error fetching the stats
         console.error(`Error fetching following stats: ${error.message}`);
-        toast.error('Error fetching stats');
+        toast.error("Error fetching stats");
       } finally {
         setIsLoading(false); // Ensure loading state is updated
       }
@@ -121,7 +123,7 @@ const Leaderboard = () => {
         const updatedStats = [...followingStats, ...newStats];
 
         // Update the local storage with the new summoner's stats
-        localStorage.setItem('followingStats', JSON.stringify(updatedStats));
+        localStorage.setItem("followingStats", JSON.stringify(updatedStats));
         // Update the followingStats array with the new summoner's stats, causing a re-render and pulling stats from local storage
         setFollowingStats(updatedStats);
 
@@ -129,17 +131,17 @@ const Leaderboard = () => {
           ...userInfo,
           following: [...userInfo.following, newSummoner],
         };
-        localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
+        localStorage.setItem("userInfo", JSON.stringify(updatedUserInfo));
 
         // Notify the user that the new summoner's stats have been fetched
-        toast.success('Added new summoner successfully');
+        toast.success("Added new summoner successfully");
       }
     } catch (error) {
       if (error.message === "Summoner doesn't exist") {
         const { name } = error.params;
-        const summonerName = name?.split('-')[0];
-        const tag = name?.split('-')[1];
-        console.log(summonerName + ' #' + tag);
+        const summonerName = name?.split("-")[0];
+        const tag = name?.split("-")[1];
+        console.log(summonerName + " #" + tag);
 
         // Remove the summoner if no stats were found
         await axios.delete(
@@ -154,7 +156,7 @@ const Leaderboard = () => {
             newSummoner.summonerName
           } #${newSummoner.tag.toUpperCase()} - ${newSummoner.region.toUpperCase()}`,
         ]);
-        toast.error('Summoner does not exist');
+        toast.error("Summoner does not exist");
       } else {
         // Handle other errors
         setMayNotExist([
@@ -164,7 +166,7 @@ const Leaderboard = () => {
           } #${newSummoner.tag.toUpperCase()} - ${newSummoner.region.toUpperCase()}`,
         ]);
         console.error(`Error fetching new summoner stats: ${error.message}`);
-        toast.error('Error fetching new summoner stats');
+        toast.error("Error fetching new summoner stats");
       }
     }
   };
@@ -186,7 +188,7 @@ const Leaderboard = () => {
     if (summoner) {
       // Confirm the user wants to remove the summoner
       const deletionConfirmed = window.confirm(
-        'Are you sure you want to remove this summoner?'
+        "Are you sure you want to remove this summoner?"
       );
       // If the user confirms the deletion then proceed
       if (!deletionConfirmed) {
@@ -195,8 +197,8 @@ const Leaderboard = () => {
 
       // Get the summoner's name and tag
       try {
-        const summonerName = summoner.username.split('-')[0];
-        const tag = summoner.username.split('-')[1];
+        const summonerName = summoner.username.split("-")[0];
+        const tag = summoner.username.split("-")[1];
 
         // Remove the summoner from the following list in the DB
         await axios.delete(
@@ -206,7 +208,7 @@ const Leaderboard = () => {
 
         // Update the local storage with the new following list
         const updatedStats = followingStats.filter(
-          (user) => user.username.split('-')[0] !== summonerName
+          (user) => user.username.split("-")[0] !== summonerName
         );
 
         // Update the followingStats array with the new following list
@@ -216,20 +218,76 @@ const Leaderboard = () => {
         );
 
         // Update the local storage with the new following list
-        localStorage.setItem('followingStats', JSON.stringify(updatedStats));
+        localStorage.setItem("followingStats", JSON.stringify(updatedStats));
         setFollowingStats(updatedStats);
         const updatedUserInfo = {
           ...userInfo,
           following: updatedFollowingArray.data,
         };
-        localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
+        localStorage.setItem("userInfo", JSON.stringify(updatedUserInfo));
 
         // Notify the user that the summoner has been removed
-        toast.success('Summoner removed successfully');
+        toast.success("Summoner removed successfully");
       } catch (error) {
         // Notify the user that there was an error removing the summoner
         toast.error(`Error removing summoner`);
       }
+    }
+  };
+
+  const refetchStats = async () => {
+    try {
+      setIsRefetching(true);
+      toast.info("Fetching following table...");
+      // Get the following list from the user's information
+      const { following } = userInfo;
+
+      // Fetch player stats for each user in the following list
+      const statsPromises = following.map((user) =>
+        getPlayerRank(user.summonerName, user.tag, user.region)
+      );
+
+      // await for all the player stats to be fetched
+      const stats = await Promise.allSettled(statsPromises);
+
+      // Collect the names of the summoners that don't exist
+      const rejectedSummoners = stats
+        .filter((result) => result.status === "rejected")
+        .map(
+          (result) =>
+            result.reason.params.name.split("-")[0] +
+            " #" +
+            result.reason.params.name.split("-")[1].toUpperCase()
+        );
+      // Update the state with the summoners that may not exist
+      setMayNotExist(rejectedSummoners);
+
+      // Notify the user of the summoners that may not exist
+      if (rejectedSummoners.length > 0) {
+        toast.error(
+          `The following summoners may not exist: ${rejectedSummoners.join(
+            ", "
+          )}`
+        );
+      }
+      // filter out the fulfilled promises
+      const fulfilledSummoners = stats
+        .filter((result) => result.status === "fulfilled")
+        .map((result) => result.value);
+      // flatten the array of arrays to get the objects
+      const flattenedStats = fulfilledSummoners.flat();
+      // update the state with the fetched stats
+      setFollowingStats(flattenedStats);
+      // update the local storage with the fetched stats
+      localStorage.setItem("followingStats", JSON.stringify(flattenedStats));
+      // notify the user that the stats have been fetched
+      toast.success("Fetched summoners stats successfully");
+    } catch (error) {
+      // notify the user that there was an error fetching the stats
+      console.error(`Error fetching following stats: ${error.message}`);
+      toast.error("Error fetching stats");
+    } finally {
+      setIsRefetching(false); // Ensure loading state is updated
     }
   };
 
@@ -238,26 +296,44 @@ const Leaderboard = () => {
       <div className="flex flex-col items-center w-full">
         {!isLoggedIn ? (
           <h1 className="text-center text-3xl">
-            To render this leaderboard, you must be{' '}
+            To render this leaderboard, you must be{" "}
             <a
               className="text-purple-500 cursor-pointer hover:underline"
               href="/login"
             >
               logged in
-            </a>{' '}
+            </a>{" "}
             and following the users you wish to compare.
           </h1>
         ) : isLoading ? (
           <>
             <h1>Fetching following table...</h1>
-            <Spinner className="my-10" size={'xl'} />
+            <Spinner className="my-10" size={"xl"} />
           </>
         ) : (
           <div className="flex flex-col space-y-5 w-full">
-            <h1 className="text-5xl font-semibold text-center">
-              {userInfo.name}&apos;s{' '}
-              <span className="text-purple-500">Leaderboard</span>
-            </h1>
+            <div className="flex justify-center space-x-4 items-center">
+              <h1 className="text-5xl font-semibold text-center">
+                {userInfo.name}&apos;s{" "}
+                <span className="text-purple-500">Leaderboard</span>
+              </h1>
+              <Button
+                onClick={refetchStats}
+                style={{
+                  color: "white",
+                  width: "3rem",
+                  height: "2rem",
+                }}
+                className="flex justify-center items-center "
+                color={"purple"}
+              >
+                {isRefetching ? (
+                  <Spinner size={"sm"} className="mb-1" />
+                ) : (
+                  <FiRefreshCcw />
+                )}
+              </Button>
+            </div>
             <h2 className="text-xl text-center">
               Add your friends, rivals, or any other summoners you&apos;d like
               to follow!
@@ -267,16 +343,16 @@ const Leaderboard = () => {
               <thead className="border">
                 <tr className="font-semibold">
                   <td className="border p-3 flex justify-between">
-                    Summoner Name{' '}
+                    Summoner Name{" "}
                     <Button
                       onClick={() => setShowAddSummoner(!showAddSummoner)}
                       style={{
-                        color: 'white',
-                        width: '3rem',
-                        height: '2rem',
+                        color: "white",
+                        width: "3rem",
+                        height: "2rem",
                       }}
                       className="flex justify-center items-center "
-                      color={'purple'}
+                      color={"purple"}
                     >
                       <span className="text-5xl mb-0.5">+</span>
                     </Button>
@@ -291,14 +367,14 @@ const Leaderboard = () => {
                   <tr key={index}>
                     <td className="border p-3">
                       <div className="flex justify-between">
-                        {user?.username?.split('-')[0] +
-                          ' #' +
-                          user?.username?.split('-')[1].toUpperCase()}
+                        {user?.username?.split("-")[0] +
+                          " #" +
+                          user?.username?.split("-")[1].toUpperCase()}
                         <Button
                           style={{
-                            color: 'white',
-                            width: '3rem',
-                            height: '2rem',
+                            color: "white",
+                            width: "3rem",
+                            height: "2rem",
                           }}
                           className="flex justify-center items-center bg-red-600 ml-2"
                           onClick={() => handleRemoveSummoner(user)}
@@ -314,20 +390,20 @@ const Leaderboard = () => {
                         alt="rank"
                         className="mr-2 w-10"
                       />
-                      {user?.rank}{' '}
-                      {user.rank === 'Unranked'
-                        ? ''
-                        : user.rank.includes('Challenger') ||
-                          user.rank.includes('Master') ||
-                          user.rank.includes('Diamond')
-                        ? ''
+                      {user?.rank}{" "}
+                      {user.rank === "Unranked"
+                        ? ""
+                        : user.rank.includes("Challenger") ||
+                          user.rank.includes("Master") ||
+                          user.rank.includes("Diamond")
+                        ? ""
                         : `${user?.lp} LP`}
                     </td>
                     <td className="border p-3">{user?.winLossRatio}</td>
                     <td className="border p-3">
-                      {' '}
+                      {" "}
                       {isNaN(user?.winPercentage[0])
-                        ? '0%'
+                        ? "0%"
                         : user?.winPercentage}
                     </td>
                   </tr>
