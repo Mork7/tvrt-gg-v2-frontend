@@ -324,7 +324,7 @@ const Leaderboard = () => {
                   width: "3rem",
                   height: "2rem",
                 }}
-                className="flex justify-center items-center "
+                className="flex justify-center items-center mt-2"
                 color={"purple"}
               >
                 {isRefetching ? (
