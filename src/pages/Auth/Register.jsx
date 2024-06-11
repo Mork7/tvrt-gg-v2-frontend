@@ -142,7 +142,7 @@ const Register = () => {
             className="w-full p-2 rounded-lg focus:ring-4 focus:ring-purple-700"
             onChange={(e) => setTag(e.target.value)}
             required
-            maxLength={4}
+            maxLength={5}
             placeholder='Do not add the "#"'
           />
           <Region setRegion={setRegion} />

@@ -57,7 +57,7 @@ const Home = () => {
             className="w-full p-2 rounded-lg focus:ring-4 focus:ring-purple-700"
             required
             onChange={(e) => setTag(e.target.value)}
-            maxLength={4}
+            maxLength={5}
             placeholder='Do not add the "#"'
           />
           <Region setRegion={setRegion} />

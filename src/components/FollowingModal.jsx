@@ -52,7 +52,7 @@ const FollowingModal = ({ onClose, onAddSummoner }) => {
           id="tag"
           className="w-full p-2 rounded-lg focus:ring-4 focus:ring-purple-700"
           onChange={(e) => setTag(e.target.value)}
-          maxLength={4}
+          maxLength={5}
           required
           placeholder='Do not add the "#"'
         />
