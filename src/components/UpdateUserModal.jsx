@@ -3,6 +3,13 @@ import { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
+/**
+ * Description
+ * @param {any} {onClose
+ * @param {any} userId
+ * @param {any} onUpdateUser}
+ * @returns {any}
+*/
 // eslint-disable-next-line react/prop-types
 const UpdateUserModal = ({ onClose, userId, onUpdateUser }) => {
   const [email, setEmail] = useState('');
