@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useCallback } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
 import { getPlayerRank } from "../../utils/leagueApi";
 import { Spinner, Button } from "flowbite-react";
@@ -20,6 +20,60 @@ const Leaderboard = () => {
   const [showAddSummoner, setShowAddSummoner] = useState(false);
   const [mayNotExist, setMayNotExist] = useState([]);
 
+  const fetchFollowingStats = useCallback(async () => {
+    try {
+      // Get the following list from the user's information
+      const { following } = userInfo;
+
+      // Fetch player stats for each user in the following list
+      const statsPromises = following.map((user) =>
+        getPlayerRank(user.summonerName, user.tag, user.region)
+      );
+
+      // await for all the player stats to be fetched
+      const stats = await Promise.allSettled(statsPromises);
+
+      // Collect the names of the summoners that don't exist
+      const rejectedSummoners = stats
+        .filter((result) => result.status === "rejected")
+        .map(
+          (result) =>
+            result.reason.params.name.split("-")[0] +
+            " #" +
+            result.reason.params.name.split("-")[1].toUpperCase()
+        );
+      // Update the state with the summoners that may not exist
+      setMayNotExist(rejectedSummoners);
+
+      // Notify the user of the summoners that may not exist
+      if (rejectedSummoners.length > 0) {
+        toast.error(
+          `The following summoners may not exist: ${rejectedSummoners.join(
+            ", "
+          )}`
+        );
+      }
+      // filter out the fulfilled promises
+      const fulfilledSummoners = stats
+        .filter((result) => result.status === "fulfilled")
+        .map((result) => result.value);
+      // flatten the array of arrays to get the objects
+      const flattenedStats = fulfilledSummoners.flat();
+      // update the state with the fetched stats
+      setFollowingStats(flattenedStats);
+      // update the local storage with the fetched stats
+      localStorage.setItem("followingStats", JSON.stringify(flattenedStats));
+      // notify the user that the stats have been fetched
+      toast.success("Fetched summoners stats successfully");
+    } catch (error) {
+      // notify the user that there was an error fetching the stats
+      console.error(`Error fetching following stats: ${error.message}`);
+      toast.error("Error fetching stats");
+    } finally {
+      setIsLoading(false); // Ensure loading state is updated
+    }
+  }, [userInfo]);
+
   useEffect(() => {
     /**
      * Fetch the stats of the summoners that the current user is following.
@@ -27,59 +81,6 @@ const Leaderboard = () => {
      * Notifies the user of the result via toast notifications.
      * @returns {Promise<void>}
      */
-    const fetchFollowingStats = async () => {
-      try {
-        // Get the following list from the user's information
-        const { following } = userInfo;
-
-        // Fetch player stats for each user in the following list
-        const statsPromises = following.map((user) =>
-          getPlayerRank(user.summonerName, user.tag, user.region)
-        );
-
-        // await for all the player stats to be fetched
-        const stats = await Promise.allSettled(statsPromises);
-
-        // Collect the names of the summoners that don't exist
-        const rejectedSummoners = stats
-          .filter((result) => result.status === "rejected")
-          .map(
-            (result) =>
-              result.reason.params.name.split("-")[0] +
-              " #" +
-              result.reason.params.name.split("-")[1].toUpperCase()
-          );
-        // Update the state with the summoners that may not exist
-        setMayNotExist(rejectedSummoners);
-
-        // Notify the user of the summoners that may not exist
-        if (rejectedSummoners.length > 0) {
-          toast.error(
-            `The following summoners may not exist: ${rejectedSummoners.join(
-              ", "
-            )}`
-          );
-        }
-        // filter out the fulfilled promises
-        const fulfilledSummoners = stats
-          .filter((result) => result.status === "fulfilled")
-          .map((result) => result.value);
-        // flatten the array of arrays to get the objects
-        const flattenedStats = fulfilledSummoners.flat();
-        // update the state with the fetched stats
-        setFollowingStats(flattenedStats);
-        // update the local storage with the fetched stats
-        localStorage.setItem("followingStats", JSON.stringify(flattenedStats));
-        // notify the user that the stats have been fetched
-        toast.success("Fetched summoners stats successfully");
-      } catch (error) {
-        // notify the user that there was an error fetching the stats
-        console.error(`Error fetching following stats: ${error.message}`);
-        toast.error("Error fetching stats");
-      } finally {
-        setIsLoading(false); // Ensure loading state is updated
-      }
-    };
 
     // if the following stats array is empty that means there is nothing local storage so we fetch
     if (
@@ -91,7 +92,7 @@ const Leaderboard = () => {
     } else {
       setIsLoading(false);
     }
-  }, [isLoggedIn, followingStats.length, userInfo]);
+  }, [isLoggedIn, followingStats.length, userInfo, fetchFollowingStats]);
 
   /**
    * Close the modal for adding a new summoner.
@@ -239,55 +240,13 @@ const Leaderboard = () => {
     try {
       setIsRefetching(true);
       toast.info("Fetching following table...");
+      fetchFollowingStats();
       // Get the following list from the user's information
-      const { following } = userInfo;
-
-      // Fetch player stats for each user in the following list
-      const statsPromises = following.map((user) =>
-        getPlayerRank(user.summonerName, user.tag, user.region)
-      );
-
-      // await for all the player stats to be fetched
-      const stats = await Promise.allSettled(statsPromises);
-
-      // Collect the names of the summoners that don't exist
-      const rejectedSummoners = stats
-        .filter((result) => result.status === "rejected")
-        .map(
-          (result) =>
-            result.reason.params.name.split("-")[0] +
-            " #" +
-            result.reason.params.name.split("-")[1].toUpperCase()
-        );
-      // Update the state with the summoners that may not exist
-      setMayNotExist(rejectedSummoners);
-
-      // Notify the user of the summoners that may not exist
-      if (rejectedSummoners.length > 0) {
-        toast.error(
-          `The following summoners may not exist: ${rejectedSummoners.join(
-            ", "
-          )}`
-        );
-      }
-      // filter out the fulfilled promises
-      const fulfilledSummoners = stats
-        .filter((result) => result.status === "fulfilled")
-        .map((result) => result.value);
-      // flatten the array of arrays to get the objects
-      const flattenedStats = fulfilledSummoners.flat();
-      // update the state with the fetched stats
-      setFollowingStats(flattenedStats);
-      // update the local storage with the fetched stats
-      localStorage.setItem("followingStats", JSON.stringify(flattenedStats));
-      // notify the user that the stats have been fetched
-      toast.success("Fetched summoners stats successfully");
     } catch (error) {
-      // notify the user that there was an error fetching the stats
-      console.error(`Error fetching following stats: ${error.message}`);
-      toast.error("Error fetching stats");
+      console.error(`Error refetching following stats: ${error.message}`);
+      toast.error("Error refetching stats");
     } finally {
-      setIsRefetching(false); // Ensure loading state is updated
+      setIsRefetching(false);
     }
   };
 

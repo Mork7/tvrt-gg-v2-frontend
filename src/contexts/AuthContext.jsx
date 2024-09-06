@@ -25,13 +25,14 @@ export const AuthProvider = ({ children }) => {
 
   // user is entire user object. when user logs in, we store the user object in local storage
   const login = (user) => {
-    // eslint-disable-next-line no-unused-vars
     const { isAdmin, _id, ...rest } = user;
     localStorage.setItem('userInfo', JSON.stringify(rest));
     localStorage.setItem(
       'summonerDetails',
       JSON.stringify(user.summonerDetails)
     );
+
+    // This is secure, only set isAdmin if user is admin, so no other users can see that they are admin or not. Unless they get hold of the JavaScript code.
     if (isAdmin) {
       localStorage.setItem('isAdmin', JSON.stringify(user.isAdmin));
     }
