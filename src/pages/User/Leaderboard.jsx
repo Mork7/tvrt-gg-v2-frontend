@@ -238,10 +238,10 @@ const Leaderboard = () => {
 
   const refetchStats = async () => {
     setIsRefetching(true);
-    
+
     try {
       toast.info("Fetching following table...");
-      fetchFollowingStats();
+      await fetchFollowingStats();
       // Get the following list from the user's information
     } catch (error) {
       console.error(`Error refetching following stats: ${error.message}`);
