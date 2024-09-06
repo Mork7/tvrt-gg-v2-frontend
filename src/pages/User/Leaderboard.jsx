@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState, useCallback } from "react";
+import { useContext, useEffect, useState, useCallback, useRef } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
 import { getPlayerRank } from "../../utils/leagueApi";
 import { Spinner, Button } from "flowbite-react";
@@ -19,6 +19,7 @@ const Leaderboard = () => {
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   const [showAddSummoner, setShowAddSummoner] = useState(false);
   const [mayNotExist, setMayNotExist] = useState([]);
+  const hasFetched = useRef(false);
 
   const fetchFollowingStats = useCallback(async () => {
     try {
@@ -86,9 +87,11 @@ const Leaderboard = () => {
     if (
       isLoggedIn &&
       followingStats.length === 0 &&
-      userInfo.following.length > 0
+      userInfo.following.length > 0 &&
+      !hasFetched.current // Stats have not been fetched
     ) {
       fetchFollowingStats();
+      hasFetched.current = true; // Stats have been fetched
     } else {
       setIsLoading(false);
     }
