@@ -90,6 +90,7 @@ const Leaderboard = () => {
       userInfo.following.length > 0 &&
       !hasFetched.current // Stats have not been fetched
     ) {
+      setIsLoading(true);
       fetchFollowingStats();
       hasFetched.current = true; // Stats have been fetched
     } else {
