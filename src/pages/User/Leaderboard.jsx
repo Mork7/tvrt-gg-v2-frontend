@@ -237,8 +237,9 @@ const Leaderboard = () => {
   };
 
   const refetchStats = async () => {
+    setIsRefetching(true);
+    
     try {
-      setIsRefetching(true);
       toast.info("Fetching following table...");
       fetchFollowingStats();
       // Get the following list from the user's information
