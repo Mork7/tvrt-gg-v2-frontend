@@ -22,6 +22,7 @@ const Leaderboard = () => {
   const hasFetched = useRef(false);
 
   const fetchFollowingStats = useCallback(async () => {
+    setIsLoading(true);
     try {
       // Get the following list from the user's information
       const { following } = userInfo;
@@ -90,7 +91,6 @@ const Leaderboard = () => {
       userInfo.following.length > 0 &&
       !hasFetched.current // Stats have not been fetched
     ) {
-      setIsLoading(true);
       fetchFollowingStats();
       hasFetched.current = true; // Stats have been fetched
     } else {
