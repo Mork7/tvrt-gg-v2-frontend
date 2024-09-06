@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState, useCallback, useRef } from "react";
+import { useContext, useEffect, useState, useCallback } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
 import { getPlayerRank } from "../../utils/leagueApi";
 import { Spinner, Button } from "flowbite-react";
@@ -19,10 +19,8 @@ const Leaderboard = () => {
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   const [showAddSummoner, setShowAddSummoner] = useState(false);
   const [mayNotExist, setMayNotExist] = useState([]);
-  const hasFetched = useRef(false);
 
   const fetchFollowingStats = useCallback(async () => {
-    setIsLoading(true);
     try {
       // Get the following list from the user's information
       const { following } = userInfo;
@@ -72,7 +70,7 @@ const Leaderboard = () => {
       console.error(`Error fetching following stats: ${error.message}`);
       toast.error("Error fetching stats");
     } finally {
-      setIsLoading(false); // Ensure loading state is updated
+      setIsLoading(false);
     }
   }, [userInfo]);
 
@@ -88,11 +86,9 @@ const Leaderboard = () => {
     if (
       isLoggedIn &&
       followingStats.length === 0 &&
-      userInfo.following.length > 0 &&
-      !hasFetched.current // Stats have not been fetched
+      userInfo.following.length > 0
     ) {
       fetchFollowingStats();
-      hasFetched.current = true; // Stats have been fetched
     } else {
       setIsLoading(false);
     }
